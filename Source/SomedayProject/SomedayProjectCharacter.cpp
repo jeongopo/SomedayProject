@@ -92,6 +92,11 @@ void ASomedayProjectCharacter::SetupPlayerInputComponent(UInputComponent* Player
 	}
 }
 
+UAbilitySystemComponent* ASomedayProjectCharacter::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent.Get();
+}
+
 void ASomedayProjectCharacter::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D
