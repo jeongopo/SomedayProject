@@ -4,19 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "AbilitySystemInterface.h"
 #include "Logging/LogMacros.h"
+#include "AbilitySystemComponent.h"
 #include "SomedayProjectCharacter.generated.h"
 
 class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
+class UAbilitySystemComponent;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
-class ASomedayProjectCharacter : public ACharacter
+class ASomedayProjectCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -62,6 +65,12 @@ protected:
 	virtual void NotifyControllerChanged() override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+private:
+	UPROPERTY()
+	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
 public:
 	/** Returns CameraBoom subobject **/
