@@ -24,7 +24,8 @@ class SOMEDAYPROJECT_API UHeroAnimInstance : public UAnimInstance
 protected:
 	virtual void NativeInitializeAnimation () override;
 	virtual void NativeUpdateAnimation (float DeltaSeconds) override;
-	
+
+	float CalculateTimeToLand();
 protected:
 	// Gameplay tags that can be mapped to blueprint variables. The variables will automatically update as the tags are added or removed.
 	// These should be used instead of manually querying for the gameplay tags.
@@ -45,6 +46,8 @@ protected:
 	//Jump
 	UPROPERTY(BlueprintReadOnly, Category = "MoveVariable")
 	float TimeToJumpApex = 0.0f;
+	UPROPERTY(BlueprintReadOnly, Category = "MoveVariable")
+	float TimeToLand = 0.0f;
 
 	UPROPERTY(BlueprintReadWrite, Category = "MoveVariable")
 	bool bJumping = false;
