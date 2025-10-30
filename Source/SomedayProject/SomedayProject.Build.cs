@@ -16,5 +16,13 @@ public class SomedayProject : ModuleRules
 			"EnhancedInput",
 			"GameplayAbilities"
 		});
-	}
+		PublicIncludePaths.AddRange(new string[] {
+            "SomedayProject"
+		});
+        PrivateDependencyModuleNames.AddRange(new string[]
+        {
+            "GameplayTags",      
+            "GameplayTasks"    
+        });
+    }
 }

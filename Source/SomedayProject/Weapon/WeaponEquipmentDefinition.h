@@ -3,7 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "GameplayAbilitySpec.h"
+
+#include "WeaponEquipmentDefinition.generated.h"
+
+class UGameplayAbility;
 
 USTRUCT(BlueprintType)
 struct FSPAbilitySet_GameplayAbility

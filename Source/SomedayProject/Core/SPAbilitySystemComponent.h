@@ -14,4 +14,6 @@ class SOMEDAYPROJECT_API USPAbilitySystemComponent : public UAbilitySystemCompon
 {
 	GENERATED_BODY()
 	
+	USPAbilitySystemComponent (const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+public:
 };
