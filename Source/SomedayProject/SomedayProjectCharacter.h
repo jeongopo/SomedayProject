@@ -9,12 +9,14 @@
 #include "AbilitySystemComponent.h"
 #include "SomedayProjectCharacter.generated.h"
 
+struct FInputActionValue;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
-class UAbilitySystemComponent;
-struct FInputActionValue;
+class USPAbilitySystemComponent;
+class UWeaponManagerComponent;
+class UWeaponEquipmentDefinition;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -47,6 +49,9 @@ class ASomedayProjectCharacter : public ACharacter, public IAbilitySystemInterfa
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UWeaponEquipmentDefinition> DefaultWeapon;
+
 public:
 	ASomedayProjectCharacter();
 	
@@ -61,6 +66,7 @@ protected:
 			
 
 protected:
+	void BeginPlay() override;
 
 	virtual void NotifyControllerChanged() override;
 
@@ -70,7 +76,10 @@ protected:
 
 private:
 	UPROPERTY()
-	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+	TObjectPtr<USPAbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY()
+	TObjectPtr<UWeaponManagerComponent> WeaponManagerComponent;
 
 public:
 	/** Returns CameraBoom subobject **/

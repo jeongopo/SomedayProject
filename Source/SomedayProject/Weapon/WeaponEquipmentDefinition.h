@@ -3,43 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
-#include "GameplayAbilitySpec.h"
-
+#include "Ability/SPGameplayAbility.h"
 #include "WeaponEquipmentDefinition.generated.h"
-
-class UGameplayAbility;
-
-USTRUCT(BlueprintType)
-struct FSPAbilitySet_GameplayAbility
-{
-	GENERATED_BODY()
-
-public:
-
-	// Gameplay ability to grant.
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UGameplayAbility> Ability = nullptr;
-
-	// Level of ability to grant.
-	UPROPERTY(EditDefaultsOnly)
-	int32 AbilityLevel = 1;
-
-	// Tag used to process input for the ability.
-	UPROPERTY(EditDefaultsOnly, Meta = (Categories = "InputTag"))
-	FGameplayTag InputTag;
-};
 
 
 /**
  * 
  */
-class UWeaponEquipmentDefinition : UObject
+UCLASS(Blueprintable, Const, BlueprintType)
+class UWeaponEquipmentDefinition : public UObject
 {
+	GENERATED_BODY()
 public:
 	UWeaponEquipmentDefinition (const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-protected:
+public:
 	// 스폰할 클래스
 	// @TODO 나중에 EquipmentInstance 가 생기면 수정
 	/*
