@@ -6,6 +6,7 @@
 #include "SomedayProjectCharacter.h"
 #include "Core/SPDefaultData.h"
 #include "EnhancedInputComponent.h"
+#include "Core/SPAbilitySystemComponent.h"
 
 void USPHeroComponent::InitilzePlayerInputComponent()
 {
@@ -30,7 +31,8 @@ void USPHeroComponent::InitilzePlayerInputComponent()
             {
                 if (BindData.InputAction.Get())
                 {
-                    EnhancedInputComponent->BindAction(BindData.InputAction, ETriggerEvent::Triggered, this, &USPHeroComponent::OnInputActionTriggered, BindData.InputTag);
+                     EnhancedInputComponent->BindAction(BindData.InputAction, ETriggerEvent::Triggered, this, &USPHeroComponent::OnInputActionTriggered, BindData.InputTag);
+
                 }
             }
         }
@@ -40,6 +42,23 @@ void USPHeroComponent::InitilzePlayerInputComponent()
 void USPHeroComponent::OnInputActionTriggered(const FInputActionValue& Value, FGameplayTag InputTag)
 {
     LOG_INFO(LogSPDefault, TEXT("USPHeroComponent::OnInputActionTriggered"));
+
+    ASomedayProjectCharacter* SPCharacter = GetPawn<ASomedayProjectCharacter>();
+    if (SPCharacter == nullptr)
+    {
+        return;
+    }
+
+    if (const APawn* Pawn = GetPawn<APawn>())
+    {
+        if (USPAbilitySystemComponent* ASC = SPCharacter->GetSPAbilitySystemComponent())
+        {
+            FGameplayTagContainer InputTagContainer;
+            InputTagContainer.AddTag(InputTag);
+
+            ASC->TryActivateAbilitiesByTag(InputTagContainer);
+        }
+    }
 }
 
 void USPHeroComponent::BeginPlay()

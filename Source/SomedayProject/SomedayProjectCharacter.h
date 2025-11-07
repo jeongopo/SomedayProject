@@ -41,6 +41,9 @@ public:
 	ASomedayProjectCharacter();
 
 	USPDefaultData* GetDefaultData() const { return DefaultData ? DefaultData : nullptr; }
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	USPAbilitySystemComponent* GetSPAbilitySystemComponent() { return AbilitySystemComponent; }
+
 protected:
 
 	/** Called for movement input */
@@ -56,8 +59,6 @@ protected:
 	virtual void NotifyControllerChanged() override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 private:
 	/** MappingContext */

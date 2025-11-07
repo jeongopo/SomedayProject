@@ -9,6 +9,10 @@ void USPGameAbility_WeaponDefault::ActivateAbility(const FGameplayAbilitySpecHan
     Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
     UE_LOG(LogSPDefault, Log, TEXT("USPGameAbility_WeaponDefault::ActivateAbility"));
+    //애니메이션 실행
+    //피격 판정 실행
+
+    EndAbility(Handle, ActorInfo, ActivationInfo, false, false);
 }
 
 void USPGameAbility_WeaponDefault::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
