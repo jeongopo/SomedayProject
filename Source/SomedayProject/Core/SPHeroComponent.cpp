@@ -2,4 +2,48 @@
 
 
 #include "SomedayProject/Core/SPHeroComponent.h"
+#include "SomedayProject/SPLogHelper.h"
+#include "SomedayProjectCharacter.h"
+#include "Core/SPDefaultData.h"
+#include "EnhancedInputComponent.h"
 
+void USPHeroComponent::InitilzePlayerInputComponent()
+{
+	ASomedayProjectCharacter* SPCharacter = GetPawn<ASomedayProjectCharacter>();
+    if (SPCharacter == nullptr)
+    {
+        return;
+    }
+
+    const USPDefaultData* DefaultData = SPCharacter->GetDefaultData();
+	if (DefaultData == nullptr)
+	{
+		return;
+	}
+
+    if (SPCharacter->InputComponent != nullptr)
+    {
+        UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(SPCharacter->InputComponent);
+        if (EnhancedInputComponent)
+        {
+            for (const FSPInputActionBindData& BindData : DefaultData->InputActionBindData)
+            {
+                if (BindData.InputAction.Get())
+                {
+                    EnhancedInputComponent->BindAction(BindData.InputAction, ETriggerEvent::Triggered, this, &USPHeroComponent::OnInputActionTriggered, BindData.InputTag);
+                }
+            }
+        }
+    }
+}
+
+void USPHeroComponent::OnInputActionTriggered(const FInputActionValue& Value, FGameplayTag InputTag)
+{
+    LOG_INFO(LogSPDefault, TEXT("USPHeroComponent::OnInputActionTriggered"));
+}
+
+void USPHeroComponent::BeginPlay()
+{
+    Super::BeginPlay();
+    InitilzePlayerInputComponent();
+}
