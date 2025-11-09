@@ -20,6 +20,9 @@ public:
 	void EquipWeapon (UWeaponEquipmentDefinition* WeaponDefinition);
 	void SpawnWeaponToActor (UWeaponEquipmentDefinition* WeaponDefinition);
 	void DestroyEquipmentActors ();
+	
+	AActor* GetFirstEquippedWeapon() const;
+	TArray<AActor*> GetEquippedWeapons() const { return SpawnedActors; }
 
 protected:
 	UPROPERTY()

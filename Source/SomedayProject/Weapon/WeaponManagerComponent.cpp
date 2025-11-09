@@ -30,11 +30,10 @@ void UWeaponManagerComponent::EquipWeapon (UWeaponEquipmentDefinition* WeaponDef
 		USPGameplayAbility* AbilityCDO = AbilitySet.Ability->GetDefaultObject<USPGameplayAbility>();
 
 		FGameplayAbilitySpec AbilitySpec(AbilityCDO, AbilitySet.AbilityLevel);
-		AbilitySpec.SourceObject = GetWorld(); //¾²´Â°Í°°Áö ¾ÊÀ¸´Ï ¾Æ¹«°Å³ª ³Ñ±â±â
+		AbilitySpec.SourceObject = GetWorld(); //ï¿½ï¿½ï¿½Â°Í°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ¹ï¿½ï¿½Å³ï¿½ ï¿½Ñ±ï¿½ï¿½
 		AbilitySpec.DynamicAbilityTags.AddTag(AbilitySet.InputTag);
 
 		const FGameplayAbilitySpecHandle AbilitySpecHandle = ASC->GiveAbility(AbilitySpec);
-		//AbilitySpecHandle ¸¦ °ü¸®ÇÏ±â?
 	}
 	SpawnWeaponToActor(WeaponDefinition);
 }
@@ -55,7 +54,6 @@ void UWeaponManagerComponent::SpawnWeaponToActor (UWeaponEquipmentDefinition* We
 		NewActor->AttachToComponent(AttachTarget, FAttachmentTransformRules::KeepRelativeTransform, WeaponDefinition->AttachSocket);
 
 		SpawnedActors.Add(NewActor);
-		//º°µµÀÇ Instance °ü¸®°¡ ÇÊ¿äÇÒ±î?
 	}
 }
 
@@ -68,4 +66,14 @@ void UWeaponManagerComponent::DestroyEquipmentActors()
 			Actor->Destroy();
 		}
 	}
+	SpawnedActors.Empty();
+}
+
+AActor* UWeaponManagerComponent::GetFirstEquippedWeapon() const
+{
+	if (SpawnedActors.Num() > 0 && SpawnedActors[0] != nullptr)
+	{
+		return SpawnedActors[0];
+	}
+	return nullptr;
 }
