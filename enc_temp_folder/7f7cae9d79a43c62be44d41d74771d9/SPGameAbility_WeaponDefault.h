@@ -62,6 +62,7 @@ private:
 	void CheckForHits();
 	void ApplyDamageToTarget(AActor* Target, const FHitResult& HitResult);
 
+	// GameplayEvent 핸들러 (노티파이에서 호출됨)
 	void HandleAttackStartEvent(FGameplayTag EventTag, const FGameplayEventData* Payload);
 
 private:
