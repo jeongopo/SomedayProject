@@ -22,7 +22,6 @@ void UHeroAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 
-	//AnimInstance �� Actor�� �ٳ�?
 	if (AActor* OwningActor = GetOwningActor())
 	{
 		if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(OwningActor))

@@ -28,6 +28,7 @@ protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
+protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attack")
 	TObjectPtr<UAnimMontage> AttackMontage;
 
@@ -44,20 +45,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attack", meta = (ClampMin = "0.0"))
 	float BaseDamage = 20.0f;
 
-	// 공격 충돌 체크 지속 시간 (노티파이 받은 후, 초)
+	//충돌처리 관련
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attack", meta = (ClampMin = "0.0"))
 	float AttackDuration = 0.3f;
-
-	// 충돌 체크 주기 (초)
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attack", meta = (ClampMin = "0.01"))
 	float CollisionCheckInterval = 0.05f;
-
-	// 레거시 지원 (노티파이가 없을 경우를 위한 폴백)
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attack|Legacy", meta = (ClampMin = "0.0"))
-	float CollisionCheckDelay = 0.2f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attack|Legacy", meta = (ClampMin = "0.0"))
-	float CollisionCheckDuration = 0.3f;
 
 private:
 	void PlayAttackAnimation();
@@ -67,14 +59,13 @@ private:
 	void StartCollisionCheck();
 	void StopCollisionCheck();
 
-	void OnAbilityEndTimer();
-
 	void CheckForHits();
 	void ApplyDamageToTarget(AActor* Target, const FHitResult& HitResult);
 
 	// GameplayEvent 핸들러 (노티파이에서 호출됨)
 	void HandleAttackStartEvent(FGameplayTag EventTag, const FGameplayEventData* Payload);
 
+private:
 	UPROPERTY()
 	TSet<AActor*> HitTargets;
 

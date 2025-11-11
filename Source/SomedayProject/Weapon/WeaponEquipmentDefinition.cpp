@@ -5,6 +5,5 @@
 
 UWeaponEquipmentDefinition::UWeaponEquipmentDefinition(const FObjectInitializer& ObjectInitializer)
 {
-	//InstanceType
 	AttachSocket = FName("weapon_r");
 }
