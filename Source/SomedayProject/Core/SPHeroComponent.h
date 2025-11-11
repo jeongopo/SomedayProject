@@ -18,7 +18,7 @@ class SOMEDAYPROJECT_API USPHeroComponent : public UPawnComponent
 	
 protected:
 	virtual void BeginPlay() override;
-	void InitilzePlayerInputComponent();
+	void InitializePlayerInputComponent();
 
 	void OnInputActionTriggered(const FInputActionValue& Value, FGameplayTag InputTag);
 };
