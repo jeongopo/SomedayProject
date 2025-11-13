@@ -7,14 +7,19 @@
 #include "AbilitySystemInterface.h"
 #include "Logging/LogMacros.h"
 #include "AbilitySystemComponent.h"
+#include "Core/SPHeroComponent.h"
 #include "SomedayProjectCharacter.generated.h"
 
+struct FInputActionValue;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
-class UAbilitySystemComponent;
-struct FInputActionValue;
+class USPAbilitySystemComponent;
+class UWeaponManagerComponent;
+class UWeaponEquipmentDefinition;
+class USPHeroComponent;
+class USPDefaultData;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -30,7 +35,32 @@ class ASomedayProjectCharacter : public ACharacter, public IAbilitySystemInterfa
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
-	
+
+
+public:
+	ASomedayProjectCharacter();
+
+	USPDefaultData* GetDefaultData() const { return DefaultData ? DefaultData : nullptr; }
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	USPAbilitySystemComponent* GetSPAbilitySystemComponent() { return AbilitySystemComponent; }
+
+protected:
+
+	/** Called for movement input */
+	void Move(const FInputActionValue& Value);
+
+	/** Called for looking input */
+	void Look(const FInputActionValue& Value);
+			
+
+protected:
+	void BeginPlay() override;
+
+	virtual void NotifyControllerChanged() override;
+
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+private:
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
@@ -47,30 +77,21 @@ class ASomedayProjectCharacter : public ACharacter, public IAbilitySystemInterfa
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
-public:
-	ASomedayProjectCharacter();
-	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UWeaponEquipmentDefinition> DefaultWeapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	USPDefaultData* DefaultData;
 
 protected:
-
-	/** Called for movement input */
-	void Move(const FInputActionValue& Value);
-
-	/** Called for looking input */
-	void Look(const FInputActionValue& Value);
-			
-
-protected:
-
-	virtual void NotifyControllerChanged() override;
-
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
-private:
 	UPROPERTY()
-	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+	TObjectPtr<USPAbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY()
+	TObjectPtr<UWeaponManagerComponent> WeaponManagerComponent;
+
+	UPROPERTY()
+	TObjectPtr<USPHeroComponent> HeroComponent;
 
 public:
 	/** Returns CameraBoom subobject **/
