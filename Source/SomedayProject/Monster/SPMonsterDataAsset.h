@@ -9,6 +9,8 @@ class UGameplayEffect;
 class UAnimMontage;
 class UBehaviorTree;
 
+
+
 UCLASS(BlueprintType)
 class SOMEDAYPROJECT_API USPMonsterDataAsset : public UPrimaryDataAsset
 {
