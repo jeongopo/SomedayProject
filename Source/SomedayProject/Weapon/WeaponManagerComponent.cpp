@@ -25,12 +25,12 @@ void UWeaponManagerComponent::EquipWeapon (UWeaponEquipmentDefinition* WeaponDef
 		return;
 	}
 
-	for (const FSPAbilitySet_GameplayAbility AbilitySet : WeaponDefinition->GrantedGameplayAbilities)
+	for (const FSPAbilitySet_GameplayAbility& AbilitySet : WeaponDefinition->GrantedGameplayAbilities)
 	{
 		USPGameplayAbility* AbilityCDO = AbilitySet.Ability->GetDefaultObject<USPGameplayAbility>();
 
 		FGameplayAbilitySpec AbilitySpec(AbilityCDO, AbilitySet.AbilityLevel);
-		AbilitySpec.SourceObject = GetWorld(); //���°Ͱ��� ������ �ƹ��ų� �ѱ��
+		AbilitySpec.SourceObject = GetWorld();
 		AbilitySpec.DynamicAbilityTags.AddTag(AbilitySet.InputTag);
 
 		const FGameplayAbilitySpecHandle AbilitySpecHandle = ASC->GiveAbility(AbilitySpec);

@@ -72,7 +72,6 @@ private:
 	FTimerHandle CollisionCheckStopTimerHandle;
 	FTimerHandle AbilityEndTimerHandle;
 
-	// GameplayEvent 바인딩 핸들
 	FDelegateHandle AttackStartEventHandle;
 	FGameplayTag AttackStartTag;
 };

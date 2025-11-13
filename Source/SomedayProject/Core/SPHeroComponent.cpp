@@ -8,7 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "Core/SPAbilitySystemComponent.h"
 
-void USPHeroComponent::InitilzePlayerInputComponent()
+void USPHeroComponent::InitializePlayerInputComponent()
 {
 	ASomedayProjectCharacter* SPCharacter = GetPawn<ASomedayProjectCharacter>();
     if (SPCharacter == nullptr)
@@ -49,15 +49,12 @@ void USPHeroComponent::OnInputActionTriggered(const FInputActionValue& Value, FG
         return;
     }
 
-    if (const APawn* Pawn = GetPawn<APawn>())
+    if (USPAbilitySystemComponent* ASC = SPCharacter->GetSPAbilitySystemComponent())
     {
-        if (USPAbilitySystemComponent* ASC = SPCharacter->GetSPAbilitySystemComponent())
-        {
-            FGameplayTagContainer InputTagContainer;
-            InputTagContainer.AddTag(InputTag);
+        FGameplayTagContainer InputTagContainer;
+        InputTagContainer.AddTag(InputTag);
 
-            ASC->TryActivateAbilitiesByTag(InputTagContainer);
-        }
+        ASC->TryActivateAbilitiesByTag(InputTagContainer);
     }
 }
 
