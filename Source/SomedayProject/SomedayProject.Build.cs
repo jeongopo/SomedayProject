@@ -14,7 +14,9 @@ public class SomedayProject : ModuleRules
 			"Engine",
 			"InputCore",
 			"EnhancedInput",
-			"GameplayAbilities"
+			"GameplayAbilities",
+			"AIModule",
+			"NavigationSystem"
 		});
 		PublicIncludePaths.AddRange(new string[] {
             "SomedayProject"
