@@ -69,9 +69,12 @@ void USPGameAbility_MonsterAttack::ActivateAbility(const FGameplayAbilitySpecHan
 
 	if (MonsterData->AttackMontage)
 	{
-		if (UAnimInstance* AnimInstance = MonsterCharacter->GetMesh() ? MonsterCharacter->GetMesh()->GetAnimInstance() : nullptr)
+		if (ACharacter* Character = Cast<ACharacter>(AvatarActor))
 		{
-			AnimInstance->Montage_Play(MonsterData->AttackMontage);
+			if (UAnimInstance* AnimInstance = MonsterCharacter->GetMesh() ? MonsterCharacter->GetMesh()->GetAnimInstance() : nullptr)
+			{
+				AnimInstance->Montage_Play(MonsterData->AttackMontage);
+			}
 		}
 	}
 

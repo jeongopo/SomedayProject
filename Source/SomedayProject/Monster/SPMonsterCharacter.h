@@ -33,15 +33,6 @@ public:
 	AActor* GetCurrentTarget() const { return CurrentTarget.Get(); }
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
-	float GetAttackRange() const;
-
-	UFUNCTION(BlueprintCallable, Category = "Combat")
-	float GetAttackRadius() const;
-
-	UFUNCTION(BlueprintCallable, Category = "Combat")
-	float GetAttackPower() const;
-
-	UFUNCTION(BlueprintCallable, Category = "Combat")
 	TSubclassOf<UGameplayEffect> GetDamageEffectClass() const;
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
@@ -69,6 +60,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
 	float AttackRetryDistance = 75.0f;
 
+protected:
+
 	void InitializeAttributes();
 	void GrantAbilities();
 
@@ -81,8 +74,6 @@ protected:
 	void HandleHealthChanged(const FOnAttributeChangeData& ChangeData);
 
 	void HandleDeath();
-	void UpdateMovementTowardsTarget(float DeltaSeconds);
-	void TryPerformAttack();
 
 private:
 	float LastAttackTime = -1000.0f;

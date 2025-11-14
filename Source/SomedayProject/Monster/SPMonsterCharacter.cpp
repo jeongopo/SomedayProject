@@ -16,6 +16,7 @@
 #include "Perception/AIPerceptionTypes.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISense_Sight.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 ASPMonsterCharacter::ASPMonsterCharacter()
 {
@@ -76,6 +77,15 @@ void ASPMonsterCharacter::BeginPlay()
 		PerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &ASPMonsterCharacter::HandleTargetPerceptionUpdated);
 	}
 
+	if (MonsterData && MonsterData->BehaviorTree)
+	{
+		AAIController* AIController = Cast<AAIController>(GetController());
+		if (AIController)
+		{
+			AIController->RunBehaviorTree(MonsterData->BehaviorTree);
+		}
+	}
+
 	InitializeAttributes();
 	GrantAbilities();
 }
@@ -83,43 +93,11 @@ void ASPMonsterCharacter::BeginPlay()
 void ASPMonsterCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
-	UpdateMovementTowardsTarget(DeltaSeconds);
-	TryPerformAttack();
 }
 
 UAbilitySystemComponent* ASPMonsterCharacter::GetAbilitySystemComponent() const
 {
 	return AbilitySystem;
-}
-
-float ASPMonsterCharacter::GetAttackRange() const
-{
-	if (MonsterAttributes)
-	{
-		return MonsterAttributes->GetAttackRange();
-	}
-
-	return MonsterData ? MonsterData->AttackRange : 200.0f;
-}
-
-float ASPMonsterCharacter::GetAttackRadius() const
-{
-	if (MonsterData)
-	{
-		return MonsterData->AttackRadius;
-	}
-
-	return 75.0f;
-}
-
-float ASPMonsterCharacter::GetAttackPower() const
-{
-	if (MonsterAttributes)
-	{
-		return MonsterAttributes->GetAttackPower();
-	}
-	return MonsterData ? MonsterData->AttackPower : 10.0f;
 }
 
 TSubclassOf<UGameplayEffect> ASPMonsterCharacter::GetDamageEffectClass() const
@@ -190,11 +168,24 @@ void ASPMonsterCharacter::HandleTargetPerceptionUpdated(AActor* Actor, FAIStimul
 		return;
 	}
 
+	AAIController* AIController = Cast<AAIController>(GetController());
+	if (!AIController)
+	{
+		return;
+	}
+
+	UBlackboardComponent* Blackboard = AIController->GetBlackboardComponent();
+	if (!Blackboard)
+	{
+		return;
+	}
+
 	if (Stimulus.WasSuccessfullySensed())
 	{
 		if (APawn* SensedPawn = Cast<APawn>(Actor))
 		{
 			HandlePawnSeen(SensedPawn);
+			Blackboard->SetValueAsObject(TEXT("TargetActor"), SensedPawn);
 		}
 	}
 	else
@@ -202,12 +193,9 @@ void ASPMonsterCharacter::HandleTargetPerceptionUpdated(AActor* Actor, FAIStimul
 		if (CurrentTarget.Get() == Actor)
 		{
 			CurrentTarget.Reset();
-
-			if (AAIController* AIController = Cast<AAIController>(GetController()))
-			{
-				AIController->ClearFocus(EAIFocusPriority::Gameplay);
-				AIController->StopMovement();
-			}
+			Blackboard->ClearValue(TEXT("TargetActor"));
+			AIController->ClearFocus(EAIFocusPriority::Gameplay);
+			AIController->StopMovement();
 		}
 	}
 }
@@ -237,67 +225,6 @@ void ASPMonsterCharacter::HandleDeath()
 
 	// TODO: add death animation / drop logic / experience reward hook
 	Destroy();
-}
-
-void ASPMonsterCharacter::UpdateMovementTowardsTarget(float DeltaSeconds)
-{
-	if (!CurrentTarget.IsValid())
-	{
-		return;
-	}
-
-	AActor* TargetActor = CurrentTarget.Get();
-	if (!TargetActor)
-	{
-		CurrentTarget.Reset();
-		return;
-	}
-
-	const float DistanceSq = FVector::DistSquared(TargetActor->GetActorLocation(), GetActorLocation());
-	const float DesiredRange = FMath::Square(FMath::Max(GetAttackRange() - AttackRetryDistance, 0.0f));
-
-	AAIController* AIController = Cast<AAIController>(GetController());
-	if (!AIController)
-	{
-		return;
-	}
-
-	if (DistanceSq > DesiredRange)
-	{
-		AIController->MoveToActor(TargetActor, AttackRetryDistance, true, true, true, nullptr, true);
-	}
-	else
-	{
-		AIController->StopMovement();
-	}
-}
-
-void ASPMonsterCharacter::TryPerformAttack()
-{
-	if (!AbilitySystem || !MonsterData || !CurrentTarget.IsValid())
-	{
-		return;
-	}
-
-	const float CurrentTime = GetWorld()->GetTimeSeconds();
-	if (CurrentTime - LastAttackTime < MonsterData->AttackInterval)
-	{
-		return;
-	}
-
-	const AActor* TargetActor = CurrentTarget.Get();
-	const float Distance = TargetActor ? FVector::Dist(TargetActor->GetActorLocation(), GetActorLocation()) : MAX_flt;
-
-	if (Distance <= GetAttackRange())
-	{
-		if (MonsterData->AttackAbilityClass)
-		{
-			if (AbilitySystem->TryActivateAbilityByClass(MonsterData->AttackAbilityClass))
-			{
-				LastAttackTime = CurrentTime;
-			}
-		}
-	}
 }
 
 
