@@ -7,6 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
 #include "Core/SPAbilitySystemComponent.h"
+#include "SPCommonDefines.h"
 #include "SomedayProjectCharacter.generated.h"
 
 struct FInputActionValue;
@@ -22,9 +23,14 @@ public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	USPAbilitySystemComponent* GetSPAbilitySystemComponent() { return AbilitySystemComponent; }
+	virtual void ResetCharacter () {};
+
+	EObjectState GetObjectState() { return CharacterState;	}
 
 protected:
 	UPROPERTY()
 	TObjectPtr<USPAbilitySystemComponent> AbilitySystemComponent;
+
+	EObjectState CharacterState;
 };
 

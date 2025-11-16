@@ -62,18 +62,24 @@ protected:
 	float AttackRetryDistance = 75.0f;
 
 protected:
+	void ResetCharacter () override;
 	void InitializeAttributes();
 	void GrantAbilities();
 
+	//AI
 	UFUNCTION()
 	void HandlePawnSeen(APawn* SeenPawn);
 
 	UFUNCTION()
 	void HandleTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
 
+	void InitAISetting();
+
+	//Lifecycle
 	void HandleHealthChanged(const FOnAttributeChangeData& ChangeData);
 
 	void HandleDeath();
+	
 
 private:
 	float LastAttackTime = -1000.0f;

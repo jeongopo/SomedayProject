@@ -18,5 +18,5 @@ public:
 	virtual EBTNodeResult::Type ExecuteTask (UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
 	UPROPERTY(EditAnywhere, Category = "AI")
-	float PatrolRadius = 1000.f;
+	float PatrolRadius = 100.f;
 };

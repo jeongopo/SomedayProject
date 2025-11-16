@@ -20,10 +20,11 @@ EBTNodeResult::Type UBTTask_FindRandomPatrol::ExecuteTask(UBehaviorTreeComponent
         return EBTNodeResult::Failed;
     }
 
+    FVector OriginPos = OwnerComp.GetBlackboardComponent()->GetValueAsVector(TEXT("OriginPosition"));
     FNavLocation Result;
-    if (NavSys->GetRandomPointInNavigableRadius(AIPawn->GetActorLocation(), PatrolRadius, Result))
+    if (NavSys->GetRandomPointInNavigableRadius(OriginPos, PatrolRadius, Result))
     {
-        OwnerComp.GetBlackboardComponent()->SetValueAsVector(TEXT("PatrolLocation"), Result.Location);
+        OwnerComp.GetBlackboardComponent()->SetValueAsVector(TEXT("PatrolPosition"), Result.Location);
         return EBTNodeResult::Succeeded;
     }
     return EBTNodeResult::Failed;

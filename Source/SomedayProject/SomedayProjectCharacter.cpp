@@ -8,6 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "SPCommonDefines.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASomedayProjectCharacter
@@ -34,10 +35,13 @@ ASomedayProjectCharacter::ASomedayProjectCharacter()
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
+	
+	CharacterState = EObjectState::Idle;
 }
 
 UAbilitySystemComponent* ASomedayProjectCharacter::GetAbilitySystemComponent() const
 {
 	return Cast<UAbilitySystemComponent>(AbilitySystemComponent.Get());
 }
+
 

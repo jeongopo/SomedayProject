@@ -110,6 +110,12 @@ TSubclassOf<UGameplayEffect> ASPMonsterCharacter::GetDamageEffectClass() const
 	return MonsterData ? MonsterData->DamageEffectClass : nullptr;
 }
 
+void ASPMonsterCharacter::ResetCharacter()
+{
+	CharacterState = EObjectState::Idle;
+	InitAISetting();
+}
+
 void ASPMonsterCharacter::InitializeAttributes()
 {
 	if (!AbilitySystem || !MonsterAttributes)
@@ -191,18 +197,36 @@ void ASPMonsterCharacter::HandleTargetPerceptionUpdated(AActor* Actor, FAIStimul
 		{
 			HandlePawnSeen(SensedPawn);
 			Blackboard->SetValueAsObject(TEXT("TargetActor"), SensedPawn);
+			CharacterState = EObjectState::Attacking;
 		}
 	}
 	else
 	{
 		if (CurrentTarget.Get() == Actor)
 		{
-			CurrentTarget.Reset();
-			Blackboard->ClearValue(TEXT("TargetActor"));
-			AIController->ClearFocus(EAIFocusPriority::Gameplay);
-			AIController->StopMovement();
+			InitAISetting();
 		}
 	}
+}
+
+void ASPMonsterCharacter::InitAISetting ()
+{
+	AAIController* AIController = Cast<AAIController>(GetController());
+	if (!AIController)
+	{
+		return;
+	}
+
+	UBlackboardComponent* Blackboard = AIController->GetBlackboardComponent();
+	if (!Blackboard)
+	{
+		return;
+	}
+
+	CurrentTarget.Reset();
+	Blackboard->ClearValue(TEXT("TargetActor"));
+	AIController->ClearFocus(EAIFocusPriority::Gameplay);
+	AIController->StopMovement();
 }
 
 void ASPMonsterCharacter::HandleHealthChanged(const FOnAttributeChangeData& ChangeData)
