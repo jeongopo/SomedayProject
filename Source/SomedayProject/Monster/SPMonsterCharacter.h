@@ -2,10 +2,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "AbilitySystemInterface.h"
 #include "Perception/AIPerceptionTypes.h"
 #include "GameplayEffectTypes.h"
 #include "GameplayAbilitySpecHandle.h"
+#include "SomedayProjectCharacter.h"
+#include "SPCommonDefines.h"
 #include "SPMonsterCharacter.generated.h"
 
 class UAbilitySystemComponent;
@@ -18,7 +19,7 @@ class UAIPerceptionComponent;
 class UAISenseConfig_Sight;
 
 UCLASS()
-class SOMEDAYPROJECT_API ASPMonsterCharacter : public ACharacter, public IAbilitySystemInterface
+class SOMEDAYPROJECT_API ASPMonsterCharacter : public ASomedayProjectCharacter
 {
 	GENERATED_BODY()
 
@@ -61,7 +62,6 @@ protected:
 	float AttackRetryDistance = 75.0f;
 
 protected:
-
 	void InitializeAttributes();
 	void GrantAbilities();
 
@@ -77,6 +77,7 @@ protected:
 
 private:
 	float LastAttackTime = -1000.0f;
+	EObjectState MonsterState;
 
 	FGameplayAbilitySpecHandle GrantedAttackAbilityHandle;
 };

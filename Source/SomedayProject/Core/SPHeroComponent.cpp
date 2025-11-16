@@ -3,14 +3,14 @@
 
 #include "SomedayProject/Core/SPHeroComponent.h"
 #include "SomedayProject/SPLogHelper.h"
-#include "SomedayProjectCharacter.h"
+#include "Hero/SPHeroCharacter.h"
 #include "Core/SPDefaultData.h"
 #include "EnhancedInputComponent.h"
 #include "Core/SPAbilitySystemComponent.h"
 
 void USPHeroComponent::InitializePlayerInputComponent()
 {
-	ASomedayProjectCharacter* SPCharacter = GetPawn<ASomedayProjectCharacter>();
+    ASPHeroCharacter* SPCharacter = GetPawn<ASPHeroCharacter>();
     if (SPCharacter == nullptr)
     {
         return;

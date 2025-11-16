@@ -83,6 +83,11 @@ void ASPMonsterCharacter::BeginPlay()
 		if (AIController)
 		{
 			AIController->RunBehaviorTree(MonsterData->BehaviorTree);
+
+			if (UBlackboardComponent* Blackboard = AIController->GetBlackboardComponent())
+			{
+				Blackboard->SetValueAsVector("OriginPosition", GetActorLocation());
+			}
 		}
 	}
 
@@ -131,7 +136,7 @@ void ASPMonsterCharacter::GrantAbilities()
 		return;
 	}
 
-	if (!HasAuthority())
+	if (!ACharacter::HasAuthority())
 	{
 		return;
 	}
@@ -224,7 +229,7 @@ void ASPMonsterCharacter::HandleDeath()
 	}
 
 	// TODO: add death animation / drop logic / experience reward hook
-	Destroy();
+	ACharacter::Destroy();
 }
 
 
