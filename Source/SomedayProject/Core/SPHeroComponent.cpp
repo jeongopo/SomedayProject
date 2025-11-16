@@ -41,8 +41,6 @@ void USPHeroComponent::InitializePlayerInputComponent()
 
 void USPHeroComponent::OnInputActionTriggered(const FInputActionValue& Value, FGameplayTag InputTag)
 {
-    LOG_INFO(LogSPDefault, TEXT("USPHeroComponent::OnInputActionTriggered"));
-
     ASomedayProjectCharacter* SPCharacter = GetPawn<ASomedayProjectCharacter>();
     if (SPCharacter == nullptr)
     {

@@ -47,7 +47,6 @@ void UHeroAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 		bWalking = Velocity.Length() > 0 && bHasAcceleratrion;
 
-		//Jump
 		bJumping = MoveComp->IsFalling() && MoveComp->Velocity.Z > 0;
 
 		if(MoveComp->IsFalling())
@@ -89,7 +88,7 @@ float UHeroAnimInstance::CalculateTimeToLand ()
     float VerticalVelocity = Velocity.Z;
     float CurrentHeight = Location.Z;
 
-    float GroundHeight = 0.0f; // 필요 시 지형을 추적하여 갱신
+    float GroundHeight = 0.0f; 
 
     float a = 0.5f * Gravity;
     float b = VerticalVelocity;
@@ -102,7 +101,6 @@ float UHeroAnimInstance::CalculateTimeToLand ()
         return 0.0f;
     }
 
-    // 두 해 중 양수인 시간 선택
     float SqrtDisc = FMath::Sqrt(Discriminant);
     float t1 = (-b + SqrtDisc) / (2 * a);
     float t2 = (-b - SqrtDisc) / (2 * a);
@@ -112,8 +110,6 @@ float UHeroAnimInstance::CalculateTimeToLand ()
     {
         TimeToLand = 0.0f;
     }
-
-	UE_LOG(LogSPDefault, Log, TEXT("점프중 Height : %f, GroundHeight : %f, 시간 값 : %f"), CurrentHeight, GroundHeight, TimeToLand);
 
     return TimeToLand;
 }
