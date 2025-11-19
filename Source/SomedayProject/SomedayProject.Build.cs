@@ -19,12 +19,13 @@ public class SomedayProject : ModuleRules
 			"NavigationSystem"
 		});
 		PublicIncludePaths.AddRange(new string[] {
-            "SomedayProject"
-		});
+            "SomedayProject",
+        });
         PrivateDependencyModuleNames.AddRange(new string[]
         {
             "GameplayTags",      
-            "GameplayTasks"    
+            "GameplayTasks",
+            "UMG",
         });
     }
 }

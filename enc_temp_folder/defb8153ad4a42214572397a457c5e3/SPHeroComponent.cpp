@@ -92,13 +92,5 @@ void USPHeroComponent::OnHealthChanged(const FOnAttributeChangeData& ChangeData)
 void USPHeroComponent::BeginPlay()
 {
     Super::BeginPlay();
-
-    ASPHeroCharacter* SPCharacter = GetPawn<ASPHeroCharacter>();
-    if (SPCharacter == nullptr)
-    {
-        return;
-    }
-
     InitializePlayerInputComponent();
-    InitializeWithAbilitySystemComponent(SPCharacter->GetSPAbilitySystemComponent());
 }

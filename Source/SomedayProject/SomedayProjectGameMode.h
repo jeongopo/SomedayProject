@@ -6,6 +6,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "SomedayProjectGameMode.generated.h"
 
+class USPDefaultData;
+
 UCLASS(minimalapi)
 class ASomedayProjectGameMode : public AGameModeBase
 {
@@ -13,6 +15,9 @@ class ASomedayProjectGameMode : public AGameModeBase
 
 public:
 	ASomedayProjectGameMode();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SPDefault")
+	USPDefaultData* DefaultData;
 };
 
 

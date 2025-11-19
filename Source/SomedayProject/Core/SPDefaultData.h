@@ -9,6 +9,7 @@
 #include "SPDefaultData.generated.h"
 
 class UInputAction;
+class UUserWidget;
 
 USTRUCT(BlueprintType)
 struct FSPInputActionBindData
@@ -22,6 +23,7 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	FGameplayTag InputTag;
 };
+
 
 /**
  * 
