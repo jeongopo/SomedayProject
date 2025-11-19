@@ -271,6 +271,12 @@ void USPGameAbility_WeaponDefault::ApplyDamageToTarget(AActor* Target, const FHi
 		FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, GetAbilityLevel());
 		if (EffectSpecHandle.IsValid() && EffectSpecHandle.Data.IsValid())
 		{
+			static const FGameplayTag DamageTag = FGameplayTag::RequestGameplayTag(FName("Data.BattleDamage"), false);
+			if (DamageTag.IsValid())
+			{
+				EffectSpecHandle.Data->SetSetByCallerMagnitude(DamageTag, BaseDamage * (-1));
+			}
+
 			EffectSpecHandle.Data->SetContext(EffectContextHandle);
 			FActiveGameplayEffectHandle ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 

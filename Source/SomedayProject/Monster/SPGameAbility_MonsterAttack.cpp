@@ -59,7 +59,7 @@ void USPGameAbility_MonsterAttack::ActivateAbility(const FGameplayAbilitySpecHan
 
 	const float EffectiveRange = AttackRangeOverride > 0.0f ? AttackRangeOverride : MonsterData->AttackRange;
 	const float EffectiveRadius = AttackRadiusOverride > 0.0f ? AttackRadiusOverride : MonsterData->AttackRadius;
-	const float DamageAmount = FMath::Max(MonsterData->AttackPower, BaseDamage);
+	const float DamageAmount = MonsterData->AttackPower;
 
 	if (!IsTargetWithinCone(MonsterCharacter, TargetActor, EffectiveRange))
 	{
@@ -192,10 +192,10 @@ void USPGameAbility_MonsterAttack::ApplyDamageToTarget(AActor* InstigatorActor, 
 	FGameplayEffectSpecHandle SpecHandle = InstigatorASC->MakeOutgoingSpec(EffectClass, GetAbilityLevel(), EffectContext);
 	if (SpecHandle.IsValid() && SpecHandle.Data.IsValid())
 	{
-		static const FGameplayTag DamageTag = FGameplayTag::RequestGameplayTag(FName("Data.Damage"), false);
+		static const FGameplayTag DamageTag = FGameplayTag::RequestGameplayTag(FName("Data.BattleDamage"), false);
 		if (DamageTag.IsValid())
 		{
-			SpecHandle.Data->SetSetByCallerMagnitude(DamageTag, DamageAmount);
+			SpecHandle.Data->SetSetByCallerMagnitude(DamageTag, DamageAmount * (-1));
 		}
 
 		TargetASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
