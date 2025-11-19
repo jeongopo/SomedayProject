@@ -34,4 +34,7 @@ class SOMEDAYPROJECT_API USPDefaultData : public UPrimaryDataAsset
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "SPHero|Input")
 	TArray<FSPInputActionBindData> InputActionBindData;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SPHero|Attributes")
+	float MaxHealth = 150.0f;
 };

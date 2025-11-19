@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "SomedayProject/Core/SPHeroComponent.h"
-#include "SomedayProject/SPLogHelper.h"
+#include "Hero/SPHeroComponent.h"
+#include "SPLogHelper.h"
 #include "Hero/SPHeroCharacter.h"
 #include "Core/SPDefaultData.h"
 #include "EnhancedInputComponent.h"

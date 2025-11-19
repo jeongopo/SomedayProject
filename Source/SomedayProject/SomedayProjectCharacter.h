@@ -24,6 +24,7 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	USPAbilitySystemComponent* GetSPAbilitySystemComponent() { return AbilitySystemComponent; }
 	virtual void ResetCharacter () {};
+	virtual void InitializeAttributes() {};
 
 	EObjectState GetObjectState() { return CharacterState;	}
 

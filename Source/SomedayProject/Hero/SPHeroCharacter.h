@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
-#include "Core/SPHeroComponent.h"
+#include "Hero/SPHeroComponent.h"
 #include "Core/SPActor.h"
 #include "SomedayProjectCharacter.h"
 #include "SPHeroCharacter.generated.h"
@@ -19,6 +19,7 @@ class UWeaponManagerComponent;
 class UWeaponEquipmentDefinition;
 class USPHeroComponent;
 class USPDefaultData;
+class USPBaseAttributeSet;
 
 UCLASS()
 class ASPHeroCharacter : public ASomedayProjectCharacter
@@ -54,8 +55,11 @@ protected:
 	virtual void NotifyControllerChanged() override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	void InitializeAttributes() override;
 
-private:
+	void HandleHealthChanged (const FOnAttributeChangeData& ChangeData);
+
+protected:
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
@@ -75,8 +79,11 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UWeaponEquipmentDefinition> DefaultWeapon;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Hero", meta = (AllowPrivateAccess = "true"))
 	USPDefaultData* DefaultData;
+
+	UPROPERTY(Instanced, VisibleAnywhere, BlueprintReadOnly, Category = "Hero")
+	TObjectPtr<USPBaseAttributeSet> HeroAttributes;
 
 protected:
 	UPROPERTY()

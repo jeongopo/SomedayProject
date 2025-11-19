@@ -210,7 +210,7 @@ void USPGameAbility_WeaponDefault::CheckForHits()
 		UEngineTypes::ConvertToTraceType(ECC_Pawn),
 		false,
 		ActorsToIgnore,
-		EDrawDebugTrace::ForDuration, 
+		EDrawDebugTrace::ForOneFrame, 
 		HitResults,
 		true
 	);
@@ -268,16 +268,7 @@ void USPGameAbility_WeaponDefault::ApplyDamageToTarget(AActor* Target, const FHi
 		TargetData->HitResult = HitResult;
 		TargetDataHandle.Add(TargetData);
 
-		/*
-		// EffectContext에 TargetData 추가
-		if (FGameplayEffectContext* EffectContext = EffectContextHandle.Get())
-		{
-			EffectContext->AddTargetData(TargetDataHandle);
-		}
-		*/
-
 		FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, GetAbilityLevel());
-
 		if (EffectSpecHandle.IsValid() && EffectSpecHandle.Data.IsValid())
 		{
 			EffectSpecHandle.Data->SetContext(EffectContextHandle);

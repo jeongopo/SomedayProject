@@ -11,7 +11,7 @@
 
 class UAbilitySystemComponent;
 class USPAbilitySystemComponent;
-class USPMonsterAttributeSet;
+class USPBaseAttributeSet;
 class USPMonsterDataAsset;
 class UGameplayAbility;
 class UGameplayEffect;
@@ -28,6 +28,7 @@ public:
 
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void BeginPlay() override;
+
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
@@ -52,8 +53,8 @@ protected:
 	UPROPERTY()
 	TObjectPtr<USPAbilitySystemComponent> AbilitySystem;
 
-	UPROPERTY()
-	TObjectPtr<USPMonsterAttributeSet> MonsterAttributes;
+	UPROPERTY(Transient, VisibleAnywhere, BlueprintReadOnly, Category = "Monster")
+	TObjectPtr<USPBaseAttributeSet> MonsterAttributes;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Combat")
 	TWeakObjectPtr<AActor> CurrentTarget;
@@ -63,7 +64,7 @@ protected:
 
 protected:
 	void ResetCharacter () override;
-	void InitializeAttributes();
+	void InitializeAttributes() override;
 	void GrantAbilities();
 
 	//AI

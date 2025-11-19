@@ -200,6 +200,8 @@ void USPGameAbility_MonsterAttack::ApplyDamageToTarget(AActor* InstigatorActor, 
 
 		TargetASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 	}
+
+	LOG_INFO(LogSPDefault, TEXT("공격 성공"));
 }
 
 

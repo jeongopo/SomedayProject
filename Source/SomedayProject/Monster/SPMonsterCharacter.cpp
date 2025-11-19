@@ -9,7 +9,7 @@
 #include "GameplayEffectTypes.h"
 #include "GameplayTagContainer.h"
 #include "Kismet/GameplayStatics.h"
-#include "Monster/SPMonsterAttributeSet.h"
+#include "Core/SPBaseAttributeSet.h"
 #include "Monster/SPMonsterDataAsset.h"
 #include "NavigationSystem.h"
 #include "Perception/AIPerceptionComponent.h"
@@ -17,6 +17,7 @@
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISense_Sight.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "SPLogHelper.h"
 
 ASPMonsterCharacter::ASPMonsterCharacter()
 {
@@ -26,7 +27,7 @@ ASPMonsterCharacter::ASPMonsterCharacter()
 	AbilitySystem->SetIsReplicated(true);
 	AbilitySystem->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 
-	MonsterAttributes = CreateDefaultSubobject<USPMonsterAttributeSet>(TEXT("MonsterAttributes"));
+	MonsterAttributes = CreateDefaultSubobject<USPBaseAttributeSet>(TEXT("MonsterAttributes"));
 
 	PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception"));
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
@@ -53,7 +54,7 @@ void ASPMonsterCharacter::BeginPlay()
 	{
 		AbilitySystem->InitAbilityActorInfo(this, this);
 
-		AbilitySystem->GetGameplayAttributeValueChangeDelegate(USPMonsterAttributeSet::GetHealthAttribute()).AddUObject(this, &ASPMonsterCharacter::HandleHealthChanged);
+		AbilitySystem->GetGameplayAttributeValueChangeDelegate(USPBaseAttributeSet::GetHealthAttribute()).AddUObject(this, &ASPMonsterCharacter::HandleHealthChanged);
 	}
 
 	if (MonsterData && GetCharacterMovement())
@@ -128,11 +129,11 @@ void ASPMonsterCharacter::InitializeAttributes()
 	const float DefenseValue = MonsterData ? MonsterData->Defense : MonsterAttributes->GetDefense();
 	const float AttackRangeValue = MonsterData ? MonsterData->AttackRange : MonsterAttributes->GetAttackRange();
 
-	AbilitySystem->SetNumericAttributeBase(USPMonsterAttributeSet::GetMaxHealthAttribute(), MaxHealthValue);
-	AbilitySystem->SetNumericAttributeBase(USPMonsterAttributeSet::GetHealthAttribute(), MaxHealthValue);
-	AbilitySystem->SetNumericAttributeBase(USPMonsterAttributeSet::GetAttackPowerAttribute(), AttackPowerValue);
-	AbilitySystem->SetNumericAttributeBase(USPMonsterAttributeSet::GetDefenseAttribute(), DefenseValue);
-	AbilitySystem->SetNumericAttributeBase(USPMonsterAttributeSet::GetAttackRangeAttribute(), AttackRangeValue);
+	AbilitySystem->SetNumericAttributeBase(USPBaseAttributeSet::GetMaxHealthAttribute(), MaxHealthValue);
+	AbilitySystem->SetNumericAttributeBase(USPBaseAttributeSet::GetHealthAttribute(), MaxHealthValue);
+	AbilitySystem->SetNumericAttributeBase(USPBaseAttributeSet::GetAttackPowerAttribute(), AttackPowerValue);
+	AbilitySystem->SetNumericAttributeBase(USPBaseAttributeSet::GetDefenseAttribute(), DefenseValue);
+	AbilitySystem->SetNumericAttributeBase(USPBaseAttributeSet::GetAttackRangeAttribute(), AttackRangeValue);
 }
 
 void ASPMonsterCharacter::GrantAbilities()
@@ -231,6 +232,8 @@ void ASPMonsterCharacter::InitAISetting ()
 
 void ASPMonsterCharacter::HandleHealthChanged(const FOnAttributeChangeData& ChangeData)
 {
+	UE_LOG(LogSPDefault, Log, TEXT("Monster Health Changed %f -> %f"), ChangeData.OldValue, ChangeData.NewValue);
+
 	const float NewValue = ChangeData.NewValue;
 	if (NewValue <= 0.0f)
 	{

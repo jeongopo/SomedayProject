@@ -12,6 +12,8 @@
 #include "InputActionValue.h"
 #include "Weapon/WeaponManagerComponent.h"
 #include "Core/SPAbilitySystemComponent.h"
+#include "Core/SPDefaultData.h"
+#include "Core/SPBaseAttributeSet.h"
 #include "SPLogHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -54,6 +56,8 @@ ASPHeroCharacter::ASPHeroCharacter()
 
 	WeaponManagerComponent = CreateDefaultSubobject<UWeaponManagerComponent>(TEXT("WeaponManagerComponent"));
 	HeroComponent = CreateDefaultSubobject<USPHeroComponent>(TEXT("HeroComponent"));
+	HeroAttributes = CreateDefaultSubobject<USPBaseAttributeSet>(TEXT("HeroAttributes"));
+
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
@@ -72,6 +76,12 @@ void ASPHeroCharacter::BeginPlay()
 			WeaponManagerComponent->EquipWeapon(WeaponDefInstance);
 		}
 	}
+
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(USPBaseAttributeSet::GetHealthAttribute()).AddUObject(this, &ASPHeroCharacter::HandleHealthChanged);
+	}
+	InitializeAttributes();
 }
 
 void ASPHeroCharacter::NotifyControllerChanged()
@@ -107,6 +117,30 @@ void ASPHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	{
 		UE_LOG(LogSPDefault, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
+}
+
+void ASPHeroCharacter::InitializeAttributes()
+{
+	if (!AbilitySystemComponent || !HeroAttributes)
+	{
+		return;
+	}
+
+	const float MaxHealthValue = DefaultData ? DefaultData->MaxHealth : HeroAttributes->GetMaxHealth();
+	//const float AttackPowerValue = DefaultData ? DefaultData->AttackPower : HeroAttributes->GetAttackPower();
+	//const float DefenseValue = DefaultData ? DefaultData->Defense : HeroAttributes->GetDefense();
+	//const float AttackRangeValue = DefaultData ? DefaultData->AttackRange : HeroAttributes->GetAttackRange();
+
+	AbilitySystemComponent->SetNumericAttributeBase(USPBaseAttributeSet::GetMaxHealthAttribute(), MaxHealthValue);
+	AbilitySystemComponent->SetNumericAttributeBase(USPBaseAttributeSet::GetHealthAttribute(), MaxHealthValue);
+	//AbilitySystemComponent->SetNumericAttributeBase(USPBaseAttributeSet::GetAttackPowerAttribute(), AttackPowerValue);
+	//AbilitySystemComponent->SetNumericAttributeBase(USPBaseAttributeSet::GetDefenseAttribute(), DefenseValue);
+	//AbilitySystemComponent->SetNumericAttributeBase(USPBaseAttributeSet::GetAttackRangeAttribute(), AttackRangeValue);
+}
+
+void ASPHeroCharacter::HandleHealthChanged(const FOnAttributeChangeData& ChangeData)
+{
+	UE_LOG(LogSPDefault, Log, TEXT("Health Changed %f -> %f"), ChangeData.OldValue, ChangeData.NewValue);
 }
 
 void ASPHeroCharacter::Move(const FInputActionValue& Value)
