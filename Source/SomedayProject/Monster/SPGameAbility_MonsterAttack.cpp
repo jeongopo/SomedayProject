@@ -92,7 +92,7 @@ void USPGameAbility_MonsterAttack::ActivateAbility(const FGameplayAbilitySpecHan
 		UEngineTypes::ConvertToTraceType(ECC_Pawn),
 		false,
 		ActorsToIgnore,
-		EDrawDebugTrace::None,
+		EDrawDebugTrace::ForOneFrame,
 		HitResults,
 		true
 	);
