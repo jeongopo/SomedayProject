@@ -4,12 +4,13 @@
 #include "AbilitySystemGlobals.h"
 #include "Abilities/GameplayAbility.h"
 #include "Core/SPAbilitySystemComponent.h"
+#include "Core/SPBaseAttributeSet.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/WidgetComponent.h"
 #include "GameplayEffect.h"
 #include "GameplayEffectTypes.h"
 #include "GameplayTagContainer.h"
 #include "Kismet/GameplayStatics.h"
-#include "Core/SPBaseAttributeSet.h"
 #include "Monster/SPMonsterDataAsset.h"
 #include "NavigationSystem.h"
 #include "Perception/AIPerceptionComponent.h"
@@ -19,13 +20,14 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "SPLogHelper.h"
 
+#include "UI/Gameplay/SPActorWidget_MonsterTop.h"
+
 ASPMonsterCharacter::ASPMonsterCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	AbilitySystem = CreateDefaultSubobject<USPAbilitySystemComponent>(TEXT("MonsterAbilitySystem"));
-	AbilitySystem->SetIsReplicated(true);
-	AbilitySystem->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+	AbilitySystemComponent->SetIsReplicated(true);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 
 	MonsterAttributes = CreateDefaultSubobject<USPBaseAttributeSet>(TEXT("MonsterAttributes"));
 
@@ -44,17 +46,23 @@ ASPMonsterCharacter::ASPMonsterCharacter()
 		PerceptionComponent->ConfigureSense(*SightConfig);
 		PerceptionComponent->SetDominantSense(UAISense_Sight::StaticClass());
 	}
+
+	WidgetComponent->SetupAttachment(GetMesh());
+	WidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 220.0f));
+	WidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	WidgetComponent->SetDrawSize(FVector2D(150.0f, 50.0f));
 }
 
 void ASPMonsterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (AbilitySystem)
+	if (AbilitySystemComponent)
 	{
-		AbilitySystem->InitAbilityActorInfo(this, this);
+		AbilitySystemComponent->InitAbilityActorInfo(this, this);
 
-		AbilitySystem->GetGameplayAttributeValueChangeDelegate(USPBaseAttributeSet::GetHealthAttribute()).AddUObject(this, &ASPMonsterCharacter::HandleHealthChanged);
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(USPBaseAttributeSet::GetHealthAttribute()).AddUObject(this, &ASPMonsterCharacter::HandleHealthChanged);
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(USPBaseAttributeSet::GetMaxHealthAttribute()).AddUObject(this, &ASPMonsterCharacter::HandleMaxHealthChanged);
 	}
 
 	if (MonsterData && GetCharacterMovement())
@@ -70,6 +78,10 @@ void ASPMonsterCharacter::BeginPlay()
 		{
 			PerceptionComponent->ConfigureSense(*SightConfig);
 			PerceptionComponent->RequestStimuliListenerUpdate();
+		}
+		if (WidgetComponent && MonsterData->TopWidget)
+		{
+			WidgetComponent->SetWidgetClass(MonsterData->TopWidget);
 		}
 	}
 
@@ -92,6 +104,7 @@ void ASPMonsterCharacter::BeginPlay()
 		}
 	}
 
+	InitializeWidget();
 	InitializeAttributes();
 	GrantAbilities();
 }
@@ -103,7 +116,7 @@ void ASPMonsterCharacter::Tick(float DeltaSeconds)
 
 UAbilitySystemComponent* ASPMonsterCharacter::GetAbilitySystemComponent() const
 {
-	return AbilitySystem;
+	return AbilitySystemComponent;
 }
 
 TSubclassOf<UGameplayEffect> ASPMonsterCharacter::GetDamageEffectClass() const
@@ -119,7 +132,7 @@ void ASPMonsterCharacter::ResetCharacter()
 
 void ASPMonsterCharacter::InitializeAttributes()
 {
-	if (!AbilitySystem || !MonsterAttributes)
+	if (!AbilitySystemComponent || !MonsterAttributes)
 	{
 		return;
 	}
@@ -129,16 +142,16 @@ void ASPMonsterCharacter::InitializeAttributes()
 	const float DefenseValue = MonsterData ? MonsterData->Defense : MonsterAttributes->GetDefense();
 	const float AttackRangeValue = MonsterData ? MonsterData->AttackRange : MonsterAttributes->GetAttackRange();
 
-	AbilitySystem->SetNumericAttributeBase(USPBaseAttributeSet::GetMaxHealthAttribute(), MaxHealthValue);
-	AbilitySystem->SetNumericAttributeBase(USPBaseAttributeSet::GetHealthAttribute(), MaxHealthValue);
-	AbilitySystem->SetNumericAttributeBase(USPBaseAttributeSet::GetAttackPowerAttribute(), AttackPowerValue);
-	AbilitySystem->SetNumericAttributeBase(USPBaseAttributeSet::GetDefenseAttribute(), DefenseValue);
-	AbilitySystem->SetNumericAttributeBase(USPBaseAttributeSet::GetAttackRangeAttribute(), AttackRangeValue);
+	AbilitySystemComponent->SetNumericAttributeBase(USPBaseAttributeSet::GetMaxHealthAttribute(), MaxHealthValue);
+	AbilitySystemComponent->SetNumericAttributeBase(USPBaseAttributeSet::GetHealthAttribute(), MaxHealthValue);
+	AbilitySystemComponent->SetNumericAttributeBase(USPBaseAttributeSet::GetAttackPowerAttribute(), AttackPowerValue);
+	AbilitySystemComponent->SetNumericAttributeBase(USPBaseAttributeSet::GetDefenseAttribute(), DefenseValue);
+	AbilitySystemComponent->SetNumericAttributeBase(USPBaseAttributeSet::GetAttackRangeAttribute(), AttackRangeValue);
 }
 
 void ASPMonsterCharacter::GrantAbilities()
 {
-	if (!AbilitySystem || !MonsterData)
+	if (!AbilitySystemComponent || !MonsterData)
 	{
 		return;
 	}
@@ -153,8 +166,19 @@ void ASPMonsterCharacter::GrantAbilities()
 		const int32 AbilityLevel = 1;
 		FGameplayAbilitySpec AbilitySpec(MonsterData->AttackAbilityClass, AbilityLevel);
 		AbilitySpec.SourceObject = this;
-		GrantedAttackAbilityHandle = AbilitySystem->GiveAbility(AbilitySpec);
+		GrantedAttackAbilityHandle = AbilitySystemComponent->GiveAbility(AbilitySpec);
 	}
+}
+
+void ASPMonsterCharacter::InitializeWidget()
+{
+	USPActorWidget_MonsterTop* MonsterWidget = GetAttachedWidget<USPActorWidget_MonsterTop>();
+	if (MonsterWidget == nullptr)
+	{
+		return;
+	}
+
+	MonsterWidget->InitializedWithAbilitySystem(GetSPAbilitySystemComponent());
 }
 
 void ASPMonsterCharacter::HandlePawnSeen(APawn* SeenPawn)
@@ -239,13 +263,20 @@ void ASPMonsterCharacter::HandleHealthChanged(const FOnAttributeChangeData& Chan
 	{
 		HandleDeath();
 	}
+
+	OnHealthChangedDelegate.Broadcast(GetSPAbilitySystemComponent(), ChangeData.OldValue, ChangeData.NewValue);
+}
+
+void ASPMonsterCharacter::HandleMaxHealthChanged(const FOnAttributeChangeData& ChangeData)
+{
+	OnMaxHealthChangedDelegate.Broadcast(GetSPAbilitySystemComponent(), ChangeData.OldValue, ChangeData.NewValue);
 }
 
 void ASPMonsterCharacter::HandleDeath()
 {
-	if (AbilitySystem)
+	if (AbilitySystemComponent)
 	{
-		AbilitySystem->CancelAllAbilities();
+		AbilitySystemComponent->CancelAllAbilities();
 	}
 
 	AAIController* AIController = Cast<AAIController>(GetController());

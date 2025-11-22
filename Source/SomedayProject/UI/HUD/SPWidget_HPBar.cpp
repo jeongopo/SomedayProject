@@ -11,17 +11,15 @@ void USPWidget_HPBar::NativeOnInitialized()
 	ProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("ProgressBar")));
 }
 
-void USPWidget_HPBar::InitProgressData(float InCurrentValue, float InMaxValue)
+void USPWidget_HPBar::OnHealthChanged(const USPAbilitySystemComponent* InHeroComp, float OldValue, float NewValue)
 {
-	MaxValue = InMaxValue;
-	CurrentValue = InCurrentValue;
-
+	CurrentValue = NewValue;
 	RefreshWidget();
 }
 
-void USPWidget_HPBar::OnHealthChanged(float OldValue, float NewValue)
+void USPWidget_HPBar::OnMaxHealthChanged(const USPAbilitySystemComponent* InHeroComp, float OldValue, float NewValue)
 {
-	CurrentValue = NewValue;
+	MaxValue = NewValue;
 	RefreshWidget();
 }
 

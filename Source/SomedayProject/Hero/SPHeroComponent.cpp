@@ -50,8 +50,10 @@ void USPHeroComponent::InitializeWithAbilitySystemComponent(USPAbilitySystemComp
 		UE_LOG(LogSPDefault, Error, TEXT("USPHeroComponent::InitializeWithAbilitySystemComponent: InASC is nullptr"));
 		return;
 	}
+	AbilitySystemComponent = InASC;
 
-	InASC->GetGameplayAttributeValueChangeDelegate(USPBaseAttributeSet::GetHealthAttribute()).AddUObject(this, &USPHeroComponent::OnHealthChanged);
+    AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(USPBaseAttributeSet::GetHealthAttribute()).AddUObject(this, &USPHeroComponent::OnHealthChanged);
+    AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(USPBaseAttributeSet::GetMaxHealthAttribute()).AddUObject(this, &USPHeroComponent::OnMaxHealthChanged);
 }
 
 void USPHeroComponent::OnInputActionTriggered(const FInputActionValue& Value, FGameplayTag InputTag)
@@ -73,20 +75,12 @@ void USPHeroComponent::OnInputActionTriggered(const FInputActionValue& Value, FG
 
 void USPHeroComponent::OnHealthChanged(const FOnAttributeChangeData& ChangeData)
 {
-	AActor* Instigator = nullptr;
-    if (ChangeData.GEModData != nullptr)
-    {
-        const FGameplayEffectContextHandle& EffectContext = ChangeData.GEModData->EffectSpec.GetEffectContext();
-        Instigator = EffectContext.GetOriginalInstigator();
-    }
+    OnHealthChangedDelegate.Broadcast(AbilitySystemComponent, ChangeData.OldValue, ChangeData.NewValue);
+}
 
-	if (Instigator == nullptr)
-	{
-		UE_LOG(LogSPDefault, Warning, TEXT("USPHeroComponent::OnHealthChanged: Instigator is nullptr"));
-        return;
-	}
-
-    OnHealthChangedDelegate.Broadcast(this, ChangeData.OldValue, ChangeData.NewValue);
+void USPHeroComponent::OnMaxHealthChanged(const FOnAttributeChangeData& ChangeData)
+{
+    OnMaxHealthChangedDelegate.Broadcast(AbilitySystemComponent, ChangeData.OldValue, ChangeData.NewValue);
 }
 
 void USPHeroComponent::BeginPlay()

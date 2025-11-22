@@ -7,15 +7,17 @@
 #include "GameplayAbilitySpecHandle.h"
 #include "SomedayProjectCharacter.h"
 #include "SPCommonDefines.h"
+#include "Hero/SPHeroComponent.h"
 #include "SPMonsterCharacter.generated.h"
 
 class UAbilitySystemComponent;
 class USPAbilitySystemComponent;
+class UWidgetComponent;
+class UAIPerceptionComponent;
 class USPBaseAttributeSet;
 class USPMonsterDataAsset;
 class UGameplayAbility;
 class UGameplayEffect;
-class UAIPerceptionComponent;
 class UAISenseConfig_Sight;
 
 UCLASS()
@@ -50,22 +52,19 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAISenseConfig_Sight> SightConfig;
 
-	UPROPERTY()
-	TObjectPtr<USPAbilitySystemComponent> AbilitySystem;
-
 	UPROPERTY(Transient, VisibleAnywhere, BlueprintReadOnly, Category = "Monster")
 	TObjectPtr<USPBaseAttributeSet> MonsterAttributes;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Combat")
-	TWeakObjectPtr<AActor> CurrentTarget;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
-	float AttackRetryDistance = 75.0f;
+public:
+	FSPHealth_AttributeChanged OnHealthChangedDelegate;
+	FSPHealth_AttributeChanged OnMaxHealthChangedDelegate;
 
 protected:
 	void ResetCharacter () override;
 	void InitializeAttributes() override;
 	void GrantAbilities();
+
+	void InitializeWidget () override;
 
 	//AI
 	UFUNCTION()
@@ -77,11 +76,16 @@ protected:
 	void InitAISetting();
 
 	//Lifecycle
-	void HandleHealthChanged(const FOnAttributeChangeData& ChangeData);
-
+	void HandleHealthChanged (const FOnAttributeChangeData& ChangeData);
+	void HandleMaxHealthChanged (const FOnAttributeChangeData& ChangeData);
 	void HandleDeath();
-	
 
+protected:
+	UPROPERTY(BlueprintReadOnly, Category = "Combat")
+	TWeakObjectPtr<AActor> CurrentTarget;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
+	float AttackRetryDistance = 75.0f;
 private:
 	float LastAttackTime = -1000.0f;
 	EObjectState MonsterState;

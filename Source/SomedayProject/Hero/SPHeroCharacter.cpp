@@ -52,7 +52,6 @@ ASPHeroCharacter::ASPHeroCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
-	AbilitySystemComponent = CreateDefaultSubobject<USPAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 
 	WeaponManagerComponent = CreateDefaultSubobject<UWeaponManagerComponent>(TEXT("WeaponManagerComponent"));
 	HeroComponent = CreateDefaultSubobject<USPHeroComponent>(TEXT("HeroComponent"));

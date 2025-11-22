@@ -11,7 +11,7 @@
 
 class USPAbilitySystemComponent;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FSPHealth_AttributeChanged, const USPHeroComponent*, HeroComponent, float, OldValue, float, NewValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FSPHealth_AttributeChanged, const USPAbilitySystemComponent*, ASC, float, OldValue, float, NewValue);
 
 /**
  * 
@@ -27,9 +27,15 @@ protected:
 	void OnInputActionTriggered(const FInputActionValue& Value, FGameplayTag InputTag);
 
 	void OnHealthChanged (const FOnAttributeChangeData& ChangeData);
+	void OnMaxHealthChanged (const FOnAttributeChangeData& ChangeData);
 public:
 	void InitializeWithAbilitySystemComponent (USPAbilitySystemComponent* InASC);
 
 public:
 	FSPHealth_AttributeChanged OnHealthChangedDelegate;
+	FSPHealth_AttributeChanged OnMaxHealthChangedDelegate;
+
+protected:
+	UPROPERTY()
+	TObjectPtr<USPAbilitySystemComponent> AbilitySystemComponent;
 };

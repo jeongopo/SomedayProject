@@ -7,6 +7,7 @@
 #include "SPWidget_HPBar.generated.h"
 
 class UProgressBar;
+class USPAbilitySystemComponent;
 
 /**
  * 
@@ -18,12 +19,15 @@ class SOMEDAYPROJECT_API USPWidget_HPBar : public UUserWidget
 
 public:
 	void NativeOnInitialized () override;
-	
-	void InitProgressData (float InCurrentValue, float InMaxValue);
-	void OnHealthChanged (float OldValue, float NewValue);
 
-	void RefreshWidget ();
+	void RefreshWidget();
 
+	//delegate
+	UFUNCTION()
+	void OnHealthChanged (const USPAbilitySystemComponent* InHeroComp, float OldValue, float NewValue);
+
+	UFUNCTION()
+	void OnMaxHealthChanged (const USPAbilitySystemComponent* InHeroComp, float OldValue, float NewValue);
 protected:
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* ProgressBar;

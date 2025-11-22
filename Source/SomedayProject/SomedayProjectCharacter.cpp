@@ -35,6 +35,10 @@ ASomedayProjectCharacter::ASomedayProjectCharacter()
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
+
+	AbilitySystemComponent = CreateDefaultSubobject<USPAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+
+	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
 	
 	CharacterState = EObjectState::Idle;
 }

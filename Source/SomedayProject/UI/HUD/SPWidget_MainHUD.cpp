@@ -4,8 +4,6 @@
 #include "UI/HUD/SPWidget_MainHUD.h"
 #include "UI/HUD/SPWidget_HPBar.h"
 #include "Hero/SPHeroComponent.h"
-#include "SomedayProjectCharacter.h"
-#include "Core/SPBaseAttributeSet.h"
 
 void USPWidget_MainHUD::NativeOnInitialized()
 {
@@ -21,27 +19,10 @@ void USPWidget_MainHUD::NativeOnInitialized()
 
 	if (USPHeroComponent* HeroComponent = OwningPawn->FindComponentByClass<USPHeroComponent>())
 	{
-		HeroComponent->OnHealthChangedDelegate.AddDynamic(this, &USPWidget_MainHUD::OnHealthChanged);
-	}
-	
-	if (ASomedayProjectCharacter* SPCharacter = Cast<ASomedayProjectCharacter>(OwningPawn))
-	{
-		if (USPAbilitySystemComponent * AbilitySysComp = SPCharacter->GetSPAbilitySystemComponent())
+		if (HealthBarWidget)
 		{
-			if (HealthBarWidget)
-			{
-				float MaxValue = AbilitySysComp->GetNumericAttribute(USPBaseAttributeSet::GetMaxHealthAttribute());
-				float CurrentValue = AbilitySysComp->GetNumericAttribute(USPBaseAttributeSet::GetHealthAttribute());
-				HealthBarWidget->InitProgressData(CurrentValue, MaxValue);
-			}
+			HeroComponent->OnHealthChangedDelegate.AddDynamic(HealthBarWidget, &USPWidget_HPBar::OnHealthChanged);
+			HeroComponent->OnMaxHealthChangedDelegate.AddDynamic(HealthBarWidget, &USPWidget_HPBar::OnMaxHealthChanged);
 		}
-	}
-}
-
-void USPWidget_MainHUD::OnHealthChanged(const USPHeroComponent* InHeroComp, float OldValue, float NewValue)
-{
-	if (HealthBarWidget)
-	{
-		HealthBarWidget->OnHealthChanged(OldValue, NewValue);
 	}
 }

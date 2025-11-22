@@ -20,9 +20,6 @@ class SOMEDAYPROJECT_API USPWidget_MainHUD : public UUserWidget
 public:
 	void NativeOnInitialized () override;
 
-	UFUNCTION()
-	void OnHealthChanged (const USPHeroComponent* InHeroComp, float OldValue, float NewValue);
-
 protected:
 	UPROPERTY()
 	USPWidget_HPBar* HealthBarWidget;
