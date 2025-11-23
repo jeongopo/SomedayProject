@@ -21,6 +21,8 @@
 #include "SPLogHelper.h"
 
 #include "UI/Gameplay/SPActorWidget_MonsterTop.h"
+#include "Data/SPDataManagerSubsystem.h"
+#include "Data/SPData_MonsterInfo.h"
 
 ASPMonsterCharacter::ASPMonsterCharacter()
 {
@@ -127,15 +129,23 @@ void ASPMonsterCharacter::ResetCharacter()
 
 void ASPMonsterCharacter::InitializeAttributes()
 {
-	if (!AbilitySystemComponent || !MonsterAttributes)
+	if (!AbilitySystemComponent || !MonsterAttributes || !MonsterData)
 	{
 		return;
 	}
 
-	const float MaxHealthValue = MonsterData ? MonsterData->MaxHealth : MonsterAttributes->GetMaxHealth();
-	const float AttackPowerValue = MonsterData ? MonsterData->AttackPower : MonsterAttributes->GetAttackPower();
-	const float DefenseValue = MonsterData ? MonsterData->Defense : MonsterAttributes->GetDefense();
-	const float AttackRangeValue = MonsterData ? MonsterData->AttackRange : MonsterAttributes->GetAttackRange();
+	USPDataManagerSubsystem* DataManager = GetGameInstance()->GetSubsystem<USPDataManagerSubsystem>();
+	if (!DataManager)
+	{
+		return;
+	}
+
+	CachedMonsterInfo = DataManager->FindDataRowFromDataTable<FSPDataRow_MonsterInfo>(ESPDataTableType::MonsterData, MonsterData->MonsterID);
+
+	const float MaxHealthValue = CachedMonsterInfo ? CachedMonsterInfo->MaxHealth : MonsterAttributes->GetMaxHealth();
+	const float AttackPowerValue = CachedMonsterInfo ? CachedMonsterInfo->AttackPower : MonsterAttributes->GetAttackPower();
+	const float DefenseValue = CachedMonsterInfo ? CachedMonsterInfo->Defense : MonsterAttributes->GetDefense();
+	const float AttackRangeValue = CachedMonsterInfo ? CachedMonsterInfo->AttackRange : MonsterAttributes->GetAttackRange();
 
 	AbilitySystemComponent->SetNumericAttributeBase(USPBaseAttributeSet::GetMaxHealthAttribute(), MaxHealthValue);
 	AbilitySystemComponent->SetNumericAttributeBase(USPBaseAttributeSet::GetHealthAttribute(), MaxHealthValue);

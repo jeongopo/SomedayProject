@@ -8,6 +8,7 @@
 #include "SomedayProjectCharacter.h"
 #include "SPCommonDefines.h"
 #include "Hero/SPHeroComponent.h"
+#include "Data/SPData_MonsterInfo.h"
 #include "SPMonsterCharacter.generated.h"
 
 class UAbilitySystemComponent;
@@ -19,6 +20,7 @@ class USPMonsterDataAsset;
 class UGameplayAbility;
 class UGameplayEffect;
 class UAISenseConfig_Sight;
+struct FSPDataRow_MonsterInfo;
 
 UCLASS()
 class SOMEDAYPROJECT_API ASPMonsterCharacter : public ASomedayProjectCharacter
@@ -77,12 +79,18 @@ protected:
 	void HandleMaxHealthChanged (const FOnAttributeChangeData& ChangeData);
 	void HandleDeath();
 
+public:
+	const FSPDataRow_MonsterInfo* GetCachedMonsterInfo() { return CachedMonsterInfo; }
+
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Combat")
 	TWeakObjectPtr<AActor> CurrentTarget;
 
+	FSPDataRow_MonsterInfo* CachedMonsterInfo;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
 	float AttackRetryDistance = 75.0f;
+
 private:
 	float LastAttackTime = -1000.0f;
 	EObjectState MonsterState;
