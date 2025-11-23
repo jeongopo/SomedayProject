@@ -49,9 +49,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAIPerceptionComponent> PerceptionComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UAISenseConfig_Sight> SightConfig;
-
 	UPROPERTY(Transient, VisibleAnywhere, BlueprintReadOnly, Category = "Monster")
 	TObjectPtr<USPBaseAttributeSet> MonsterAttributes;
 

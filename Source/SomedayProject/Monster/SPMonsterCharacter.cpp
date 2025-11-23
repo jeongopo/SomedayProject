@@ -32,20 +32,6 @@ ASPMonsterCharacter::ASPMonsterCharacter()
 	MonsterAttributes = CreateDefaultSubobject<USPBaseAttributeSet>(TEXT("MonsterAttributes"));
 
 	PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception"));
-	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
-
-	if (PerceptionComponent && SightConfig)
-	{
-		SightConfig->SightRadius = 1000.0f;
-		SightConfig->LoseSightRadius = 1200.0f;
-		SightConfig->PeripheralVisionAngleDegrees = 70.0f;
-		SightConfig->DetectionByAffiliation.bDetectEnemies = true;
-		SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
-		SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
-
-		PerceptionComponent->ConfigureSense(*SightConfig);
-		PerceptionComponent->SetDominantSense(UAISense_Sight::StaticClass());
-	}
 
 	WidgetComponent->SetupAttachment(GetMesh());
 	WidgetComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 220.0f));
@@ -65,41 +51,50 @@ void ASPMonsterCharacter::BeginPlay()
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(USPBaseAttributeSet::GetMaxHealthAttribute()).AddUObject(this, &ASPMonsterCharacter::HandleMaxHealthChanged);
 	}
 
-	if (MonsterData && GetCharacterMovement())
+	if (MonsterData)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = MonsterData->MoveSpeed;
-	}
-
-	if (MonsterData && SightConfig)
-	{
-		SightConfig->SightRadius = MonsterData->DetectionRadius;
-		SightConfig->LoseSightRadius = MonsterData->LoseSightRadius;
-		if (PerceptionComponent)
+		if (GetCharacterMovement())
 		{
-			PerceptionComponent->ConfigureSense(*SightConfig);
-			PerceptionComponent->RequestStimuliListenerUpdate();
+			GetCharacterMovement()->MaxWalkSpeed = MonsterData->MoveSpeed;
 		}
+
 		if (WidgetComponent && MonsterData->TopWidget)
 		{
 			WidgetComponent->SetWidgetClass(MonsterData->TopWidget);
 		}
-	}
 
-	if (PerceptionComponent)
-	{
-		PerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &ASPMonsterCharacter::HandleTargetPerceptionUpdated);
-	}
-
-	if (MonsterData && MonsterData->BehaviorTree)
-	{
-		AAIController* AIController = Cast<AAIController>(GetController());
-		if (AIController)
+		if (PerceptionComponent)
 		{
-			AIController->RunBehaviorTree(MonsterData->BehaviorTree);
+			UAISenseConfig_Sight* SightConfig = NewObject<UAISenseConfig_Sight>(this, UAISenseConfig_Sight::StaticClass());
 
-			if (UBlackboardComponent* Blackboard = AIController->GetBlackboardComponent())
+			if (SightConfig)
 			{
-				Blackboard->SetValueAsVector("OriginPosition", GetActorLocation());
+				SightConfig->SightRadius = 1000.0f;
+				SightConfig->LoseSightRadius = 1200.0f;
+				SightConfig->PeripheralVisionAngleDegrees = 70.0f;
+				SightConfig->DetectionByAffiliation.bDetectEnemies = true;
+				SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
+				SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
+
+				PerceptionComponent->ConfigureSense(*SightConfig);
+				PerceptionComponent->SetDominantSense(UAISense_Sight::StaticClass());
+			}
+
+			PerceptionComponent->RequestStimuliListenerUpdate();
+			PerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &ASPMonsterCharacter::HandleTargetPerceptionUpdated);
+		}
+
+		if (MonsterData->BehaviorTree)
+		{
+			AAIController* AIController = Cast<AAIController>(GetController());
+			if (AIController)
+			{
+				AIController->RunBehaviorTree(MonsterData->BehaviorTree);
+
+				if (UBlackboardComponent* Blackboard = AIController->GetBlackboardComponent())
+				{
+					Blackboard->SetValueAsVector("OriginPosition", GetActorLocation());
+				}
 			}
 		}
 	}
