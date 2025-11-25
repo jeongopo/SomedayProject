@@ -20,7 +20,7 @@ void USPDataManagerSubsystem::LoadAllDataTables()
     FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
     FARFilter Filter;
     Filter.PackagePaths.Add("/Game/Data");
-    Filter.ClassNames.Add(UDataTable::StaticClass()->GetFName());
+    Filter.ClassPaths.Add(UDataTable::StaticClass()->GetClassPathName());
     Filter.bRecursivePaths = true;
 
     TArray<FAssetData> AssetList;

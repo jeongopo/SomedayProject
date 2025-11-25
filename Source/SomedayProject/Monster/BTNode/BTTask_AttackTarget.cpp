@@ -48,7 +48,8 @@ EBTNodeResult::Type UBTTask_AttackTarget::ExecuteTask(UBehaviorTreeComponent& Ow
 	}
 
     float Distance = FVector::Dist(Monster->GetActorLocation(), TargetActor->GetActorLocation());
-    if (Distance <= Monster->GetCachedMonsterInfo()->AttackRange)
+	float AttackRange = Monster->GetCachedMonsterInfo() ? Monster->GetCachedMonsterInfo()->AttackRange : MonsterData->AttackRadius;
+    if (Distance <= AttackRange)
     {
         //TODO 여기가 이렇게되면 안될것같은데..
         if (MonsterData->AttackAbilityClass)

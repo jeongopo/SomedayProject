@@ -100,6 +100,15 @@ void ASPMonsterCharacter::BeginPlay()
 			}
 		}
 	}
+	
+	USPDataManagerSubsystem* DataManager = GetGameInstance()->GetSubsystem<USPDataManagerSubsystem>();
+	if (!DataManager)
+	{
+		return;
+	}
+
+	//쓰는 구간이 많아서 먼저 캐싱
+	CachedMonsterInfo = DataManager->FindDataRowFromDataTable<FSPDataRow_MonsterInfo>(ESPDataTableType::MonsterData, MonsterData->MonsterID);
 
 	InitializeWidget();
 	InitializeAttributes();
@@ -133,14 +142,6 @@ void ASPMonsterCharacter::InitializeAttributes()
 	{
 		return;
 	}
-
-	USPDataManagerSubsystem* DataManager = GetGameInstance()->GetSubsystem<USPDataManagerSubsystem>();
-	if (!DataManager)
-	{
-		return;
-	}
-
-	CachedMonsterInfo = DataManager->FindDataRowFromDataTable<FSPDataRow_MonsterInfo>(ESPDataTableType::MonsterData, MonsterData->MonsterID);
 
 	const float MaxHealthValue = CachedMonsterInfo ? CachedMonsterInfo->MaxHealth : MonsterAttributes->GetMaxHealth();
 	const float AttackPowerValue = CachedMonsterInfo ? CachedMonsterInfo->AttackPower : MonsterAttributes->GetAttackPower();

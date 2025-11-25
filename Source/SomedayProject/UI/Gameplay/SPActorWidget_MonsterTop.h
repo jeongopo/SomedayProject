@@ -22,6 +22,7 @@ class SOMEDAYPROJECT_API USPActorWidget_MonsterTop : public UUserWidget
 
 public:
 	void InitializedWithAbilitySystem (USPAbilitySystemComponent* InASC);
+	TObjectPtr<USPAbilitySystemComponent> AbilitySystemComponent;
 
 protected:
 	UPROPERTY(meta = (BindWidgetOptional))
