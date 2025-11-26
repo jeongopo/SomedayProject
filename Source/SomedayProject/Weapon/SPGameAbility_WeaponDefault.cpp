@@ -25,7 +25,7 @@ USPGameAbility_WeaponDefault::USPGameAbility_WeaponDefault()
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::LocalPredicted;
 
-	AttackStartTag = FGameplayTag::RequestGameplayTag(FName("AnimNoti.NormalAttack"), false);
+	AttackStartTag = FGameplayTag::RequestGameplayTag(FName("AnimNoti.BeginAttack"), false);
 }
 
 void USPGameAbility_WeaponDefault::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
