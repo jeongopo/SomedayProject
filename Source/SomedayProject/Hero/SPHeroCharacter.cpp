@@ -15,6 +15,7 @@
 #include "Core/SPDefaultData.h"
 #include "Core/SPBaseAttributeSet.h"
 #include "SPLogHelper.h"
+#include "Animation/HeroAnimInstance.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASPHeroCharacter
@@ -175,5 +176,16 @@ void ASPHeroCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void ASPHeroCharacter::OnDamaged()
+{
+	UE_LOG(LogSPDefault, Log, TEXT("ASPHeroCharacter::OnDamaged"));
+
+	if (DefaultData && !DefaultData->HitMontage.IsNull())
+	{
+		UHeroAnimInstance* AnimInstance = Cast<UHeroAnimInstance>(GetMesh()->GetAnimInstance());
+		AnimInstance->Montage_Play(DefaultData->HitMontage.Get());
 	}
 }

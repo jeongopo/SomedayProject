@@ -18,11 +18,11 @@
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISense_Sight.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "SPLogHelper.h"
 
 #include "UI/Gameplay/SPActorWidget_MonsterTop.h"
 #include "Data/SPDataManagerSubsystem.h"
 #include "Data/SPData_MonsterInfo.h"
+#include "SPLogHelper.h"
 
 ASPMonsterCharacter::ASPMonsterCharacter()
 {
@@ -185,6 +185,15 @@ void ASPMonsterCharacter::InitializeWidget()
 	}
 
 	MonsterWidget->InitializedWithAbilitySystem(GetSPAbilitySystemComponent());
+}
+
+void ASPMonsterCharacter::OnDamaged()
+{
+	UAnimInstance* AnimInstance = Cast<UAnimInstance>(GetMesh()->GetAnimInstance());
+	if (AnimInstance && MonsterData && !MonsterData->HitMontage.IsNull())
+	{
+		AnimInstance->Montage_Play(MonsterData->HitMontage.Get(), 1.0f);
+	}
 }
 
 void ASPMonsterCharacter::HandlePawnSeen(APawn* SeenPawn)

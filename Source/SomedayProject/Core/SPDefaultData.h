@@ -9,7 +9,7 @@
 #include "SPDefaultData.generated.h"
 
 class UInputAction;
-class UUserWidget;
+class UAnimMontage;
 
 USTRUCT(BlueprintType)
 struct FSPInputActionBindData
@@ -36,6 +36,9 @@ class SOMEDAYPROJECT_API USPDefaultData : public UPrimaryDataAsset
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "SPHero|Input")
 	TArray<FSPInputActionBindData> InputActionBindData;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SPHero|DefaultAM")
+	TObjectPtr<UAnimMontage> HitMontage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SPHero|Attributes")
 	float MaxHealth = 150.0f;

@@ -43,6 +43,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SPAbilitySystem")
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SPAbilitySystem")
+	TObjectPtr<UAnimMontage> HitMontage;
+
 	//°ð ¾È¾¸
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SPMonster|Value")
 	TObjectPtr<UAnimMontage> AttackMontage;

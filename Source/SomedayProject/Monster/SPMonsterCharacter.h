@@ -64,6 +64,7 @@ protected:
 	void GrantAbilities();
 
 	void InitializeWidget () override;
+	void OnDamaged () override;
 
 	//AI
 	UFUNCTION()

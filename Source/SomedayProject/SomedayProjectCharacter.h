@@ -22,11 +22,15 @@ class ASomedayProjectCharacter : public ACharacter, public IAbilitySystemInterfa
 
 public:
 	ASomedayProjectCharacter();
+	void BeginPlay () override;
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	TObjectPtr<USPAbilitySystemComponent> GetSPAbilitySystemComponent() { return AbilitySystemComponent; }
 	virtual void ResetCharacter () {};
 	virtual void InitializeAttributes() {};
+	virtual void OnDamaged() {};
+
+	void NotifyGameplayEffectExecuted (UAbilitySystemComponent* Source, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle);
 
 	//widget component
 	virtual void InitializeWidget() {};
