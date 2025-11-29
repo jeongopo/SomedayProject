@@ -125,11 +125,6 @@ UAbilitySystemComponent* ASPMonsterCharacter::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
-TSubclassOf<UGameplayEffect> ASPMonsterCharacter::GetDamageEffectClass() const
-{
-	return MonsterData ? MonsterData->DamageEffectClass : nullptr;
-}
-
 void ASPMonsterCharacter::ResetCharacter()
 {
 	CharacterState = EObjectState::Idle;
@@ -173,14 +168,6 @@ void ASPMonsterCharacter::GrantAbilities()
 		FGameplayAbilitySpec AbilitySpec(MonsterData->AttackAbilityClass, AbilityLevel);
 		AbilitySpec.SourceObject = this;
 		GrantedAttackAbilityHandle = AbilitySystemComponent->GiveAbility(AbilitySpec);
-	}
-
-	if (MonsterData->GetHitAbilityClass)
-	{
-		const int32 AbilityLevel = 1;
-		FGameplayAbilitySpec AbilitySpec(MonsterData->GetHitAbilityClass, AbilityLevel);
-		AbilitySpec.SourceObject = this;
-		AbilitySystemComponent->GiveAbility(AbilitySpec);
 	}
 }
 

@@ -38,9 +38,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	AActor* GetCurrentTarget() const { return CurrentTarget.Get(); }
 
-	UFUNCTION(BlueprintCallable, Category = "Combat")
-	TSubclassOf<UGameplayEffect> GetDamageEffectClass() const;
-
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	USPMonsterDataAsset* GetMonsterData() const { return MonsterData; }
 
