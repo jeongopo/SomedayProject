@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Weapon/SPGameAbility_WeaponDefault.h"
+#include "Ability/SPGA_AttackDefault.h"
 #include "SPLogHelper.h"
 #include "SomedayProjectCharacter.h"
 #include "Weapon/WeaponManagerComponent.h"
@@ -20,7 +20,7 @@
 #include "GameplayTagContainer.h"
 #include "Abilities/GameplayAbilityTypes.h"
 
-USPGameAbility_WeaponDefault::USPGameAbility_WeaponDefault()
+USPGA_AttackDefault::USPGA_AttackDefault()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 	NetExecutionPolicy = EGameplayAbilityNetExecutionPolicy::LocalPredicted;
@@ -28,7 +28,7 @@ USPGameAbility_WeaponDefault::USPGameAbility_WeaponDefault()
 	AttackStartTag = FGameplayTag::RequestGameplayTag(FName("AnimNoti.BeginAttack"), false);
 }
 
-void USPGameAbility_WeaponDefault::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+void USPGA_AttackDefault::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
@@ -44,7 +44,7 @@ void USPGameAbility_WeaponDefault::ActivateAbility(const FGameplayAbilitySpecHan
 	if (ASC && AttackStartTag.IsValid())
 	{
 		FGameplayEventTagMulticastDelegate::FDelegate OnAttackStartDelegate;
-		OnAttackStartDelegate.BindUObject(this, &USPGameAbility_WeaponDefault::HandleAttackStartEvent);
+		OnAttackStartDelegate.BindUObject(this, &USPGA_AttackDefault::HandleAttackStartEvent);
 		AttackStartEventHandle = ASC->AddGameplayEventTagContainerDelegate(
 			FGameplayTagContainer(AttackStartTag),
 			OnAttackStartDelegate
@@ -54,7 +54,7 @@ void USPGameAbility_WeaponDefault::ActivateAbility(const FGameplayAbilitySpecHan
 	PlayAttackAnimation();
 }
 
-void USPGameAbility_WeaponDefault::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+void USPGA_AttackDefault::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
 	if (ASC && AttackStartTag.IsValid() && AttackStartEventHandle.IsValid())
@@ -74,7 +74,7 @@ void USPGameAbility_WeaponDefault::EndAbility(const FGameplayAbilitySpecHandle H
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
-void USPGameAbility_WeaponDefault::PlayAttackAnimation()
+void USPGA_AttackDefault::PlayAttackAnimation()
 {
 	if (!AttackMontage)
 	{
@@ -109,12 +109,12 @@ void USPGameAbility_WeaponDefault::PlayAttackAnimation()
 	if (AnimInstance->Montage_Play(AttackMontage, 1.0f))
 	{
 		FOnMontageEnded MontageEndedDelegate;
-		MontageEndedDelegate.BindUObject(this, &USPGameAbility_WeaponDefault::OnMontageEnded);
+		MontageEndedDelegate.BindUObject(this, &USPGA_AttackDefault::OnMontageEnded);
 		AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, AttackMontage);
 	}
 }
 
-void USPGameAbility_WeaponDefault::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+void USPGA_AttackDefault::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	if (Montage == AttackMontage)
 	{
@@ -122,7 +122,7 @@ void USPGameAbility_WeaponDefault::OnMontageEnded(UAnimMontage* Montage, bool bI
 	}
 }
 
-void USPGameAbility_WeaponDefault::StartCollisionCheck()
+void USPGA_AttackDefault::StartCollisionCheck()
 {
 	CheckForHits();
 
@@ -131,7 +131,7 @@ void USPGameAbility_WeaponDefault::StartCollisionCheck()
 		World->GetTimerManager().SetTimer(
 			CollisionCheckTimerHandle,
 			this,
-			&USPGameAbility_WeaponDefault::CheckForHits,
+			&USPGA_AttackDefault::CheckForHits,
 			CollisionCheckInterval,
 			true
 		);
@@ -139,14 +139,14 @@ void USPGameAbility_WeaponDefault::StartCollisionCheck()
 		World->GetTimerManager().SetTimer(
 			CollisionCheckStopTimerHandle,
 			this,
-			&USPGameAbility_WeaponDefault::StopCollisionCheck,
+			&USPGA_AttackDefault::StopCollisionCheck,
 			AttackDuration,
 			false
 		);
 	}
 }
 
-void USPGameAbility_WeaponDefault::StopCollisionCheck()
+void USPGA_AttackDefault::StopCollisionCheck()
 {
 	/*
 	if (UWorld* World = GetWorld())
@@ -157,12 +157,12 @@ void USPGameAbility_WeaponDefault::StopCollisionCheck()
 	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
-void USPGameAbility_WeaponDefault::HandleAttackStartEvent(FGameplayTag EventTag, const FGameplayEventData* Payload)
+void USPGA_AttackDefault::HandleAttackStartEvent(FGameplayTag EventTag, const FGameplayEventData* Payload)
 {
 	StartCollisionCheck();
 }
 
-void USPGameAbility_WeaponDefault::CheckForHits()
+void USPGA_AttackDefault::CheckForHits()
 {
 	AActor* AvatarActor = GetAvatarActorFromActorInfo();
 	if (!AvatarActor)
@@ -241,7 +241,7 @@ void USPGameAbility_WeaponDefault::CheckForHits()
 	}
 }
 
-void USPGameAbility_WeaponDefault::ApplyDamageToTarget(AActor* Target, const FHitResult& HitResult)
+void USPGA_AttackDefault::ApplyDamageToTarget(AActor* Target, const FHitResult& HitResult)
 {
 	if (!Target)
 	{

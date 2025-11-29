@@ -7,7 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "Abilities/GameplayAbilityTypes.h"
 #include "SPCommonDefines.h"
-#include "SPGameAbility_WeaponDefault.generated.h"
+#include "SPGA_AttackDefault.generated.h"
 
 class ACharacter;
 class UAnimMontage;
@@ -18,12 +18,12 @@ class UAbilitySystemComponent;
 struct FGameplayEventData;
 
 UCLASS()
-class SOMEDAYPROJECT_API USPGameAbility_WeaponDefault : public USPGameplayAbility
+class SOMEDAYPROJECT_API USPGA_AttackDefault : public USPGameplayAbility
 {
 	GENERATED_BODY()
 
 public:
-	USPGameAbility_WeaponDefault();
+	USPGA_AttackDefault();
 
 protected:
 	void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
