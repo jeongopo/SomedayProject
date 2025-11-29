@@ -48,7 +48,7 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 	
-	void OnDamaged () override;
+	void OnDamaged (ESP_AttackType InAttackType, ESP_AbnormalType InAbnormalType) override;
 
 protected:
 	void BeginPlay() override;

@@ -9,6 +9,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "SPCommonDefines.h"
+#include "Gameplay/SPGameplayEffect_Damage.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASomedayProjectCharacter
@@ -62,11 +63,14 @@ void ASomedayProjectCharacter::NotifyGameplayEffectExecuted(UAbilitySystemCompon
 {
 	//나중에 서버 생기면 서버 구현부로 빠져야하는 부분. 
 
-	static const FGameplayTag DamageTag = FGameplayTag::RequestGameplayTag(FName("Data.BattleDamage"), false);
-
-	if (SpecApplied.GetSetByCallerMagnitude(DamageTag, false) < 0)
+	if (SpecApplied.Def)
 	{
-		OnDamaged();
+		if (const USPGameplayEffect_Damage* DamageEffect = Cast<USPGameplayEffect_Damage>(SpecApplied.Def.Get()))
+		{
+			ESP_AttackType AttackType = DamageEffect->AttackType;
+			ESP_AbnormalType AbnormalType = DamageEffect->AbnormalType;
+			OnDamaged(AttackType, AbnormalType);
+		}
 	}
 }
 

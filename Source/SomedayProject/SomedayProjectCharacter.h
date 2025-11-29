@@ -28,7 +28,7 @@ public:
 	TObjectPtr<USPAbilitySystemComponent> GetSPAbilitySystemComponent() { return AbilitySystemComponent; }
 	virtual void ResetCharacter () {};
 	virtual void InitializeAttributes() {};
-	virtual void OnDamaged() {};
+	virtual void OnDamaged (ESP_AttackType InAttackType, ESP_AbnormalType InAbnormalType) {};
 
 	void NotifyGameplayEffectExecuted (UAbilitySystemComponent* Source, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle);
 

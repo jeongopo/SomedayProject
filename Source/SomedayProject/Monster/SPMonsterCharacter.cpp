@@ -174,6 +174,14 @@ void ASPMonsterCharacter::GrantAbilities()
 		AbilitySpec.SourceObject = this;
 		GrantedAttackAbilityHandle = AbilitySystemComponent->GiveAbility(AbilitySpec);
 	}
+
+	if (MonsterData->GetHitAbilityClass)
+	{
+		const int32 AbilityLevel = 1;
+		FGameplayAbilitySpec AbilitySpec(MonsterData->GetHitAbilityClass, AbilityLevel);
+		AbilitySpec.SourceObject = this;
+		AbilitySystemComponent->GiveAbility(AbilitySpec);
+	}
 }
 
 void ASPMonsterCharacter::InitializeWidget()
@@ -187,12 +195,24 @@ void ASPMonsterCharacter::InitializeWidget()
 	MonsterWidget->InitializedWithAbilitySystem(GetSPAbilitySystemComponent());
 }
 
-void ASPMonsterCharacter::OnDamaged()
+void ASPMonsterCharacter::OnDamaged(ESP_AttackType InAttackType, ESP_AbnormalType InAbnormalType)
 {
-	UAnimInstance* AnimInstance = Cast<UAnimInstance>(GetMesh()->GetAnimInstance());
-	if (AnimInstance && MonsterData && !MonsterData->HitMontage.IsNull())
+	if (!AbilitySystemComponent || !MonsterData)
 	{
-		AnimInstance->Montage_Play(MonsterData->HitMontage.Get(), 1.0f);
+		return;
+	}
+
+	if (InAbnormalType == ESP_AbnormalType::Stun)
+	{
+		if (MonsterData && !MonsterData->HitMontage.IsNull())
+		{
+			UAnimInstance* AnimInstance = Cast<UAnimInstance>(GetMesh()->GetAnimInstance());
+			if (AnimInstance)
+			{
+				AnimInstance->StopAllMontages(0.0f);
+				AnimInstance->Montage_Play(MonsterData->HitMontage);
+			}
+		}
 	}
 }
 

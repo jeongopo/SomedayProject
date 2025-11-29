@@ -64,7 +64,7 @@ protected:
 	void GrantAbilities();
 
 	void InitializeWidget () override;
-	void OnDamaged () override;
+	void OnDamaged (ESP_AttackType InAttackType, ESP_AbnormalType InAbnormalType) override;
 
 	//AI
 	UFUNCTION()
@@ -89,13 +89,7 @@ protected:
 
 	FSPDataRow_MonsterInfo* CachedMonsterInfo;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
-	float AttackRetryDistance = 75.0f;
-
 private:
-	float LastAttackTime = -1000.0f;
-	EObjectState MonsterState;
-
 	FGameplayAbilitySpecHandle GrantedAttackAbilityHandle;
 };
 

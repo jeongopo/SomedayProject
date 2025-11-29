@@ -116,7 +116,7 @@ void USPGameAbility_WeaponDefault::PlayAttackAnimation()
 
 void USPGameAbility_WeaponDefault::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	if (Montage == AttackMontage && !bInterrupted)
+	if (Montage == AttackMontage)
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 	}
@@ -148,12 +148,13 @@ void USPGameAbility_WeaponDefault::StartCollisionCheck()
 
 void USPGameAbility_WeaponDefault::StopCollisionCheck()
 {
+	/*
 	if (UWorld* World = GetWorld())
 	{
 		World->GetTimerManager().ClearTimer(CollisionCheckTimerHandle);
 	}
-
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	*/
+	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void USPGameAbility_WeaponDefault::HandleAttackStartEvent(FGameplayTag EventTag, const FGameplayEventData* Payload)

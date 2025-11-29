@@ -179,11 +179,11 @@ void ASPHeroCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
-void ASPHeroCharacter::OnDamaged()
+void ASPHeroCharacter::OnDamaged(ESP_AttackType InAttackType, ESP_AbnormalType InAbnormalType)
 {
 	UE_LOG(LogSPDefault, Log, TEXT("ASPHeroCharacter::OnDamaged"));
 
-	if (DefaultData && !DefaultData->HitMontage.IsNull())
+	if (DefaultData && !DefaultData->HitMontage)
 	{
 		UHeroAnimInstance* AnimInstance = Cast<UHeroAnimInstance>(GetMesh()->GetAnimInstance());
 		AnimInstance->Montage_Play(DefaultData->HitMontage.Get());

@@ -11,3 +11,19 @@ enum class EObjectState : uint8
 	Attacking   UMETA(DisplayName = "Attacking"),
 	Dead        UMETA(DisplayName = "Dead")
 };
+
+UENUM(BlueprintType)
+enum class ESP_AttackType : uint8
+{
+	Normal = 0,
+	Hard,
+	Skill
+};
+
+UENUM(BlueprintType)
+enum class ESP_AbnormalType :uint8
+{
+	None        UMETA(DisplayName = "None"),
+	Stun        UMETA(DisplayName = "Stun"),
+};
+

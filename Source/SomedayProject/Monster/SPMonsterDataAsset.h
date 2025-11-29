@@ -41,6 +41,9 @@ public:
 	TSubclassOf<UGameplayAbility> AttackAbilityClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SPAbilitySystem")
+	TSubclassOf<UGameplayAbility> GetHitAbilityClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SPAbilitySystem")
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SPAbilitySystem")
